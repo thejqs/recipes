@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+ <h1>Create a recipe!</h1>
+     <form method="POST" action="">
+     {% csrf_token %}
+     {{form.as_p}}
+     {{ingr.as_p}}
+     <button type="submit">Submit</button>
+     </form>
+</body>
+</html>

@@ -1,6 +1,9 @@
 from django.contrib.auth.models import User
 from django.core.validators import EmailValidator
 from django import forms
+from django.forms import ModelForm
+from main.models import Recipe, Ingredient
+
 
 class UserCreationForm(forms.ModelForm):
 
@@ -52,3 +55,16 @@ class UserCreationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+class RecipeForm(ModelForm):
+    class Meta:
+        model = Recipe
+        fields = ['name', 'instructions', 'notes', 'source', 'rating',
+                  'difficulty', 'servings']
+
+
+class IngredientForm(ModelForm):
+    class Meta:
+        model = Ingredient
+        fields = ['name', 'unit', 'quantity']
