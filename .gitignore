@@ -1,27 +1,10 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*$py.class
 
 # C extensions
 *.so
-
-# Ignore system files
-.DS_Store
-
-# Ignore editor files
-*.swp
-*.swo
-
-# Ignore migrations
-migrations/
-
-# Ignore local configuration
-*.db
-*.db-journal
-settings.py
-
-# Ignore generated staticfiles
-static/
 
 # Distribution / packaging
 .Python
@@ -73,3 +56,15 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Static media folder
+/media/
+
+# Database migrations folder
+*/migrations/
+
+# Secret application settings
+settings_secret.py
+
+# SQLite3 database files
+*.sqlite3
