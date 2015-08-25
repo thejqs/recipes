@@ -68,3 +68,5 @@ settings_secret.py
 
 # SQLite3 database files
 *.sqlite3
+
+*.orig
