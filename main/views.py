@@ -4,7 +4,7 @@ from main.forms import RecipeForm, IngredientForm
 
 
 def create_recipe(request):
-    IngredientFormSet = formset_factory(IngredientForm)
+    IngredientFormSet = formset_factory(IngredientForm, min_num=4)
     context = {}
     context['form'] = RecipeForm
     context['ingr'] = IngredientFormSet
@@ -14,7 +14,11 @@ def create_recipe(request):
         #  The rest of this function is an example
         formset = IngredientFormSet(request.POST, request.FILES)
         if formset.is_valid():
-            # manipulate the data or save it or whatver....
+            ingredients = validate_data.pop('ingr')
+            recipe = validate_data
+            recipe.save()
+            for ingredient in ingredients:
+                ingredient.save()
             pass
         else:
             formset = IngredientFormSet()
