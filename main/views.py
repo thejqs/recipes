@@ -146,7 +146,7 @@ def create_recipe(request):
         # TODO - add in the logic to separate the ingredients from the recipe
         # then save the ingredients and the recipe.
         #  The rest of this function is an example
-        
+
         formset = IngredientFormSet(request.POST)
         recipe_form = RecipeForm(request.POST)
         if recipe_form.is_valid():
