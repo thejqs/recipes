@@ -3,8 +3,9 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 
 # for recipe create
-from django.forms.formsets import formset_factory
+from django.forms.models import modelformset_factory
 from main.forms import RecipeForm, IngredientForm
+from main.models import Ingredient
 
 # django user authentication imports
 from django.contrib.auth.models import User
@@ -123,7 +124,8 @@ def home(request):
 # ========= create recipe =========
 
 def create_recipe(request):
-    IngredientFormSet = formset_factory(IngredientForm, min_num=4)
+    IngredientFormSet = modelformset_factory(
+        Ingredient, fields=('name', 'unit', 'quantity'), extra=3)
     context = {}
     context['form'] = RecipeForm
     context['ingr'] = IngredientFormSet
@@ -132,14 +134,19 @@ def create_recipe(request):
         # TODO - add in the logic to separate the ingredients from the recipe
         # then save the ingredients and the recipe.
         #  The rest of this function is an example
+        
         formset = IngredientFormSet(request.POST)
         recipe_form = RecipeForm(request.POST)
         if recipe_form.is_valid():
             recipe = recipe_form.save(commit=False)
             recipe.creator = request.user
             recipe.save()
+        # import ipdb; ipdb.set_trace()
         if formset.is_valid():
-            formset.save()
+            forms = formset.save(commit=False)
+            for form in forms:
+                form.recipe = recipe
+                form.save()
 
         else:
             formset = IngredientFormSet()

@@ -67,4 +67,4 @@ class RecipeForm(ModelForm):
 class IngredientForm(ModelForm):
     class Meta:
         model = Ingredient
-        fields = ['name', 'unit', 'quantity']
+        fields = ['name', 'unit', 'quantity', 'recipe']
