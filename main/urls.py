@@ -1,7 +1,7 @@
 from django.conf.urls import include, url
-from main.views import home
+from main.views import home, CreateRecipe
 
 urlpatterns = [
     url(r'^$', home, name='home'),
-    url(r'^create-recipe/$', 'main.views.create_recipe', name='create_recipe'),
+    url(r'^create-recipe/$', CreateRecipe.as_view(), name='create_recipe'),
 ]
