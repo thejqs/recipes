@@ -133,9 +133,6 @@ class HomeView(View):
         return render(request, 'main/landing_page.html')
 
 
-# ========= create recipe =========
-
-
 class CreateRecipe(View):
 
     def post(self, request):
@@ -146,10 +143,10 @@ class CreateRecipe(View):
         context['form'] = RecipeForm
         context['ingr'] = ingredients
         if request.method == 'POST':
-            # TODO - add in the logic to separate the ingredients from the recipe
-            # then save the ingredients and the recipe.
-            #  The rest of this function is an example
-            
+            # TODO - add in the logic to separate the ingredients from the
+            # recipe then save the ingredients and the recipe.  The rest of
+            # this function is an example
+
             formset = IngredientFormSet(request.POST)
             recipe_form = RecipeForm(request.POST)
             if recipe_form.is_valid():
