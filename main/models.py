@@ -64,6 +64,7 @@ class Ingredient(models.Model):
     name = models.CharField(max_length=255)
     unit = models.IntegerField(choices=UNIT_CHOICES)
     quantity = models.FloatField()
+    recipe = models.ForeignKey('Recipe', related_name='ingredients')
 
     def __unicode__(self):
         return '{} {} {}'.format(self.quantity, self.unit, self.name)
