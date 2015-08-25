@@ -127,18 +127,20 @@ def create_recipe(request):
     context = {}
     context['form'] = RecipeForm
     context['ingr'] = IngredientFormSet
+    user = request.user
     if request.method == 'POST':
         # TODO - add in the logic to separate the ingredients from the recipe
         # then save the ingredients and the recipe.
         #  The rest of this function is an example
-        formset = IngredientFormSet(request.POST, request.FILES)
-        if formset.is_valid():
-            ingredients = validate_data.pop('ingr')
-            recipe = validate_data
+        formset = IngredientFormSet(request.POST)
+        recipe_form = RecipeForm(request.POST)
+        if recipe_form.is_valid():
+            recipe = recipe_form.save(commit=False)
+            recipe.creator = request.user
             recipe.save()
-            for ingredient in ingredients:
-                ingredient.save()
-            pass
+        if formset.is_valid():
+            formset.save()
+
         else:
             formset = IngredientFormSet()
     return render(request, 'main/create-recipe.html', context)

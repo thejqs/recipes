@@ -60,8 +60,8 @@ class UserCreationForm(forms.ModelForm):
 class RecipeForm(ModelForm):
     class Meta:
         model = Recipe
-        fields = ['name', 'instructions', 'notes', 'source', 'rating',
-                  'difficulty', 'servings']
+        fields = '__all__'
+        exclude = ['creator', 'created', 'modified', 'exclude_from_search']
 
 
 class IngredientForm(ModelForm):

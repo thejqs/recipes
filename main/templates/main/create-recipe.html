@@ -4,6 +4,7 @@
  <h1>Create a recipe!</h1>
      <form method="POST" action="" id="create-recipe-form">
 	     {% csrf_token %}
+         <input type="hidden" name="creator" value="{{user.id}}">
 	     <div class="form-group">
 	     	{{form.as_p}}
 	     </div>
