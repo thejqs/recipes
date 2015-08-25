@@ -14,10 +14,11 @@
 
     <body>
 
-        {# {% include "project/navbar.html" %} #}
+        {% include "main/navbar.html" %}
 
-        {% block content %}
-        {% endblock content %}
+        <div class="container">
+            {% block content %}{% endblock content %}
+        </div>
 
         {# {% include "project/footer.html" %} #}
 

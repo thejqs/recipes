@@ -1,11 +1,7 @@
 # django imports
+from django.forms.models import modelformset_factory
 from django.shortcuts import render, redirect
 from django.views.generic import View
-
-# for recipe create
-from django.forms.models import modelformset_factory
-from main.forms import RecipeForm, IngredientForm
-from main.models import Ingredient
 
 # django user authentication imports
 from django.contrib.auth.models import User
@@ -16,7 +12,8 @@ from django.contrib.auth import (
 )
 
 # project imports
-from main.forms import UserCreationForm
+from main.forms import UserCreationForm, RecipeForm, IngredientForm
+from main.models import Ingredient, Recipe
 
 
 class RegisterView(View):
@@ -25,7 +22,7 @@ class RegisterView(View):
 
         # if a user is already logged in, redirect to home
         if request.user.is_authenticated():
-            return redirect('main:home')
+            return redirect('main:root')
 
         # save a blank user creation form in the context and reload page
         context = {'form': UserCreationForm}
@@ -35,7 +32,7 @@ class RegisterView(View):
 
         # if a user is already logged in, redirect to home
         if request.user.is_authenticated():
-            return redirect('main:home')
+            return redirect('main:root')
 
         # create a filled user creation form from POST data
         filled_user_creation_form = UserCreationForm(request.POST)
@@ -52,7 +49,7 @@ class RegisterView(View):
 
             # log the new user into the site and redirect to home
             auth_login(request, user)
-            return redirect('main:home')
+            return redirect('main:root')
 
         # if the filled form was invalid
         else:
@@ -68,6 +65,10 @@ class LoginView(View):
 
     def get(self, request):
 
+        # if a user is already logged in, redirect to home
+        if request.user.is_authenticated():
+            return redirect('main:root')
+
         # get the next parameter to remember where to go after login
         context = {}
         context['next'] = request.GET.get('next', '/')
@@ -77,7 +78,7 @@ class LoginView(View):
 
         # if a user is already logged in, redirect to home
         if request.user.is_authenticated():
-            return redirect('main:home')
+            return redirect('main:root')
 
         # attempt to authenticate the user
         user = authenticate(username=request.POST['username'],
@@ -114,11 +115,22 @@ class LogoutView(View):
 
     def get(self, request):
         auth_logout(request)
-        return redirect('main:home')
+        return redirect('main:root')
 
 
-def home(request):
-    return render(request, 'main/home.html')
+def root(request):
+    if request.user.is_authenticated():
+        return HomeView.as_view()(request)
+    else:
+        return render(request, 'main/landing_page.html')
+
+
+class HomeView(View):
+
+    def get(self, request):
+        user = request.user
+        recipes = Recipe
+        return render(request, 'main/landing_page.html')
 
 
 # ========= create recipe =========
