@@ -137,8 +137,10 @@ class CreateRecipe(View):
 
     def post(self, request):
         context = {}
+        # Makes a model formset based off of the Ingredient Model
         IngredientFormSet = modelformset_factory(
             Ingredient, fields=('name', 'unit', 'quantity'), extra=3)
+        # sets the queryset to none so it isn't pulling in all ingredients
         ingredients = IngredientFormSet(queryset=Ingredient.objects.none())
         context['form'] = RecipeForm
         context['ingr'] = ingredients
@@ -150,7 +152,6 @@ class CreateRecipe(View):
                 recipe = recipe_form.save(commit=False)
                 recipe.creator = request.user
                 recipe.save()
-            # import ipdb; ipdb.set_trace()
             if formset.is_valid():
                 forms = formset.save(commit=False)
                 for form in forms:
@@ -170,6 +171,51 @@ class CreateRecipe(View):
         context['ingr'] = ingredients
 
         return render(request, 'main/create-recipe.html', context)
+
+# ======== List all recipes =========
+
+
+class SearchRecipes(View):
+
+    def get(self, request):
+        context = {}
+        # TODO filter recipes by user instead of all
+        recipes = Recipe.objects.all()
+        context['recipes'] = recipes
+        return render(request, 'main/search-recipes.html', context)
+
+    def post(self, request):
+        context = {}
+        query = {}
+
+        recipes = Recipe.objects.all()
+        filters = request.POST
+
+        name = filters['name']
+        rating = filters['rating']
+        difficulty = filters['difficulty']
+        meal = filters['meal']
+        servings = filters['servings']
+        ingredients = filters['ingredients']
+
+        # import ipdb; ipdb.set_trace()
+        if name:
+            query['name__icontains'] = name
+        if rating:
+            query['rating'] = rating
+        if difficulty:
+            query['difficulty'] = difficulty
+        if meal:
+            query['meal'] = meal
+        if servings:
+            query['servings'] = servings
+        if ingredients:
+            query['ingredients__name__icontains'] = ingredients
+        context['recipes'] = recipes.filter(**query)
+        return render(request, 'main/search-recipes.html', context)
+
+
+class EditRecipe(View):
 
 
 class RecipeDetails(View):
