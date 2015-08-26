@@ -136,16 +136,13 @@ class HomeView(View):
 class CreateRecipe(View):
 
     def post(self, request):
-        ontext = {}
+        context = {}
         IngredientFormSet = modelformset_factory(
             Ingredient, fields=('name', 'unit', 'quantity'), extra=3)
         ingredients = IngredientFormSet(queryset=Ingredient.objects.none())
         context['form'] = RecipeForm
         context['ingr'] = ingredients
         if request.method == 'POST':
-            # TODO - add in the logic to separate the ingredients from the
-            # recipe then save the ingredients and the recipe.  The rest of
-            # this function is an example
 
             formset = IngredientFormSet(request.POST)
             recipe_form = RecipeForm(request.POST)
@@ -173,3 +170,17 @@ class CreateRecipe(View):
         context['ingr'] = ingredients
 
         return render(request, 'main/create-recipe.html', context)
+class EditRecipe(View):
+
+    def get(self, request, id):
+        context = {}
+        recipe = Recipe.objects.filter(id=id)
+        context['recipe'] = recipe
+        ingredients = Ingredient.objects.filter(recipe=recipe)
+        context['ingredients'] = ingredients
+
+        return render(request, 'main/recipe.html', context)
+
+    def put(self, request, id):
+        context = {}
+        recipe = Recipe.objects.get(id=id)
