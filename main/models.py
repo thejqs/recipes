@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from markupfield.fields import MarkupField
 
 
 class Recipe(models.Model):
@@ -33,7 +34,7 @@ class Recipe(models.Model):
     modified = models.DateTimeField(auto_now=True)
     creator = models.ForeignKey(User)
     name = models.CharField(max_length=255)
-    instructions = models.TextField(null=True, blank=True)
+    instructions = MarkupField(markup_type='markdown', null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
     source = models.TextField(null=True, blank=True)
     rating = models.IntegerField(choices=RATING_CHOICES, default=0)

@@ -1,0 +1,49 @@
+{% extends "main/base.html" %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-xs-12">
+           <h1 class="text-center">{{recipe.name}}</h1>
+        </div>
+    </div>
+
+    <hr>
+    
+    <div class="row">
+        <div class="col-md-4 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Ingredients</div>
+                <div class="panel-body">
+                    {% for ingredient in recipe.ingredients.all %}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                {{ingredient.quantity}}
+                                {{ingredient.get_unit_display}}
+                                {{ingredient.name}}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-md-6 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Instructions</div>
+                <div class="panel-body">
+                    {{ recipe.instructions }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2 col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Notes</div>
+                <div class="panel-body">
+                    {{ recipe.notes }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
