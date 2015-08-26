@@ -145,7 +145,6 @@ class CreateRecipe(View):
         context['form'] = RecipeForm
         context['ingr'] = ingredients
         if request.method == 'POST':
-
             formset = IngredientFormSet(request.POST)
             recipe_form = RecipeForm(request.POST)
             if recipe_form.is_valid():
@@ -213,9 +212,6 @@ class SearchRecipes(View):
             query['ingredients__name__icontains'] = ingredients
         context['recipes'] = recipes.filter(**query)
         return render(request, 'main/search-recipes.html', context)
-
-
-class EditRecipe(View):
 
 
 class RecipeDetails(View):
