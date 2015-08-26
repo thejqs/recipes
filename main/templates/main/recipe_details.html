@@ -7,19 +7,50 @@
         </div>
     </div>
 
-    <hr>
-    
+    <br>
+
     <div class="row">
-        <div class="col-md-4 col-sm-6">
+        <div class="col-sm-12">
             <div class="panel panel-default">
-                <div class="panel-heading">Ingredients</div>
                 <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p>Meal: {{ recipe.get_meal_display }} for {{ recipe.servings }}</p>
+                            <p>Rating: {{ recipe.rating }} stars</p>
+                            <p>Difficulty: {{ recipe.get_difficulty_display }}</p>
+                        </div>
+                        <div class="col-sm-3">
+                            <p>Created: {{ recipe.created }}</p>
+                            <p>Modified: {{ recipe.modified }}</p>
+                        </div>
+                        <div class="col-sm-6">Source: {{ recipe.source }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span>Ingredients</span>
+                    <span class="pull-right">Edit (TODO)</span>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p><strong>Makes {{ recipe.servings }} servings:</strong></p>
+                        </div>
+                    </div>
                     {% for ingredient in recipe.ingredients.all %}
                         <div class="row">
                             <div class="col-sm-12">
-                                {{ingredient.quantity}}
-                                {{ingredient.get_unit_display}}
-                                {{ingredient.name}}
+                                <p>
+                                    {{ingredient.quantity}}
+                                    {{ingredient.get_unit_display}}
+                                    {{ingredient.name}}
+                                </p>
                             </div>
                         </div>
                     {% endfor %}
@@ -29,18 +60,28 @@
     
         <div class="col-md-6 col-sm-6">
             <div class="panel panel-default">
-                <div class="panel-heading">Instructions</div>
+                <div class="panel-heading">
+                    <span>Instructions</span>
+                    <span class="pull-right">Edit (TODO)</span>
+                </div>
                 <div class="panel-body">
                     {{ recipe.instructions }}
                 </div>
             </div>
         </div>
 
-        <div class="col-md-2 col-sm-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">Notes</div>
-                <div class="panel-body">
-                    {{ recipe.notes }}
+        <div class="col-md-3 col-sm-12">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span>Notes</span>
+                            <span class="pull-right">Edit (TODO)</span>
+                        </div>
+                        <div class="panel-body">
+                            {{ recipe.notes }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

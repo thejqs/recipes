@@ -35,7 +35,7 @@ class Recipe(models.Model):
     creator = models.ForeignKey(User)
     name = models.CharField(max_length=255)
     instructions = MarkupField(markup_type='markdown', null=True, blank=True)
-    notes = models.TextField(null=True, blank=True)
+    notes = MarkupField(markup_type='markdown', null=True, blank=True)
     source = models.TextField(null=True, blank=True)
     rating = models.IntegerField(choices=RATING_CHOICES, default=0)
     difficulty = models.IntegerField(choices=DIFFICULTY_CHOICES, default=0)
@@ -50,14 +50,14 @@ class Recipe(models.Model):
 class Ingredient(models.Model):
 
     UNIT_CHOICES = (
-        (1, 'Teaspoon'),
-        (2, 'Dessert Spoon'),
-        (3, 'Table Spoon'),
-        (4, 'Fluid Ounce'),
-        (5, 'Cup'),
-        (6, 'Pint'),
-        (7, 'Quart'),
-        (8, 'Gallon'),
+        (1, 'teaspoon'),
+        (2, 'dessert spoon'),
+        (3, 'tablespoon'),
+        (4, 'ounce'),
+        (5, 'cup'),
+        (6, 'pint'),
+        (7, 'quart'),
+        (8, 'gallon'),
         (9, 'pinch'),
         (10, 'dash'),
     )
