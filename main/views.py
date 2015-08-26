@@ -171,8 +171,6 @@ class CreateRecipe(View):
 
         return render(request, 'main/create-recipe.html', context)
 
-# ======== List all recipes =========
-
 
 class SearchRecipes(View):
 
