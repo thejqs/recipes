@@ -1,6 +1,6 @@
 # django imports
 from django.forms.models import modelformset_factory
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
 
 # django user authentication imports
@@ -170,16 +170,15 @@ class CreateRecipe(View):
         context['ingr'] = ingredients
 
         return render(request, 'main/create-recipe.html', context)
-class EditRecipe(View):
+
+
+class RecipeDetails(View):
 
     def get(self, request, id):
+        recipe = get_object_or_404(Recipe, pk=id)
         context = {}
-        recipe = Recipe.objects.filter(id=id)
         context['recipe'] = recipe
-        ingredients = Ingredient.objects.filter(recipe=recipe)
-        context['ingredients'] = ingredients
-
-        return render(request, 'main/recipe.html', context)
+        return render(request, 'main/recipe_details.html', context)
 
     def put(self, request, id):
         context = {}
