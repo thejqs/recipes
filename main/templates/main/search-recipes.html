@@ -68,14 +68,14 @@
                     <td>
                         <a href="{% url 'main:recipe_details' id=recipe.id %}"><h4>{{recipe.name}}</h4></a>
                     </td>
-                    <td>{{recipe.rating}} star(s)</td>
-                    <td>This is a(n) {{recipe.get_difficulty_display}} recipe</td>
-                    <td>{{recipe.get_meal_display}} meal</td>
-                    <td>This recipe serves {{recipe.servings}}</td>
+                    <td>{{recipe.rating}}</td>
+                    <td>{{recipe.get_difficulty_display}}</td>
+                    <td>{{recipe.get_meal_display}}</td>
+                    <td>{{recipe.servings}}</td>
                     <td>
                         {% for ingredient in recipe.ingredients.all %}
                             {{ingredient.quantity}}
-                            {{ingredient.unit}}
+                            {{ingredient.get_unit_display}}
                             {{ingredient.name}}
                         {% endfor %}
                     </td>
