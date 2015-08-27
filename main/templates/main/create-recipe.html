@@ -9,13 +9,32 @@
 	     	{{form.as_p}}
 	     </div>
 	     <div class="form-group" id="ingredient-entry">
-	     	<table>
-	     		{{ingr}}
+	     	<table class="form-group">
+	     		{{ingr.management_form}}
+                <div id="items-form-container">
+                {% for form in ingr %}
+                    <div id="item-{{ forloop.counter0 }}">
+                        {{form.id}}
+                        {{form.as_p}}
+                    </div>
+                {% endfor %}
+                    
+                </div>
+                <!--
+                {{ ingredient_forms.empty_form }}
+                -->
+
 	     	</table>
 	     </div>
 	     <div class="form-group">
-	     	<button id="add-ingredient">Add ingredient</button>
+	     	<button id="add-ingredient" class="btn add-ingredient">Add Ingredient</button>
 	     </div>
 	     <button type="submit">Submit</button>
      </form>
+    <script type="text/html" id="item-template">
+        <div id="item-__prefix__">
+            {{ingr.empty_form}}
+        </div>
+    </script>
+
 {% endblock content %}

@@ -1,6 +1,7 @@
 # django imports
+from django.db.models import Q
 from django.forms.models import modelformset_factory
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
 
 # django user authentication imports
@@ -14,6 +15,12 @@ from django.contrib.auth import (
 # project imports
 from main.forms import UserCreationForm, RecipeForm, IngredientForm
 from main.models import Ingredient, Recipe
+
+# python imports
+# from pprint import pprint as p
+# import heapq
+import itertools
+import operator
 
 
 class RegisterView(View):
@@ -136,24 +143,21 @@ class HomeView(View):
 class CreateRecipe(View):
 
     def post(self, request):
-        ontext = {}
+        context = {}
+        # Makes a model formset based off of the Ingredient Model
         IngredientFormSet = modelformset_factory(
             Ingredient, fields=('name', 'unit', 'quantity'), extra=3)
+        # sets the queryset to none so it isn't pulling in all ingredients
         ingredients = IngredientFormSet(queryset=Ingredient.objects.none())
         context['form'] = RecipeForm
         context['ingr'] = ingredients
         if request.method == 'POST':
-            # TODO - add in the logic to separate the ingredients from the
-            # recipe then save the ingredients and the recipe.  The rest of
-            # this function is an example
-
             formset = IngredientFormSet(request.POST)
             recipe_form = RecipeForm(request.POST)
             if recipe_form.is_valid():
                 recipe = recipe_form.save(commit=False)
                 recipe.creator = request.user
                 recipe.save()
-            # import ipdb; ipdb.set_trace()
             if formset.is_valid():
                 forms = formset.save(commit=False)
                 for form in forms:
@@ -166,10 +170,120 @@ class CreateRecipe(View):
 
     def get(self, request):
         context = {}
+        # Makes a model formset based off of the Ingredient Model
         IngredientFormSet = modelformset_factory(
             Ingredient, fields=('name', 'unit', 'quantity'), extra=3)
+        # sets the queryset to none so it isn't pulling in all ingredients
         ingredients = IngredientFormSet(queryset=Ingredient.objects.none())
         context['form'] = RecipeForm
         context['ingr'] = ingredients
 
         return render(request, 'main/create-recipe.html', context)
+
+
+class SearchRecipes(View):
+
+    def get(self, request):
+        context = {}
+        # TODO filter recipes by user instead of all
+        recipes = Recipe.objects.all()
+        context['recipes'] = recipes
+        return render(request, 'main/search-recipes.html', context)
+
+    def post(self, request):
+
+        # TODO - filter this query by user
+
+        # get the queryset of all recipes
+        recipes = Recipe.objects.all()
+
+        # get the filter form data from the post request
+        form_filters = request.POST
+
+        # create the context and initialize a variable to pur response in
+        context = {}
+        context['recipes'] = []
+
+        # extract the filter form data to variables for easier m
+        name = form_filters['name']
+        rating = form_filters['rating']
+        difficulty = form_filters['difficulty']
+        meal = form_filters['meal']
+        servings = form_filters['servings']
+        ingredients = form_filters['ingredients']
+
+        # build initial filter (using every field but ingredient):
+        query_dict = {}
+        if name:
+            query_dict['name__icontains'] = name
+        if rating:
+            query_dict['rating'] = rating
+        if difficulty:
+            query_dict['difficulty'] = difficulty
+        if meal:
+            query_dict['meal'] = meal
+        if servings:
+            query_dict['servings'] = servings
+
+        # apply the initial filter
+        recipes = recipes.filter(**query_dict)
+
+        if ingredients:
+
+            # get the list of all searched words
+            words = ingredients.split(',')
+            words = set([x.strip() for x in words])
+
+            # create a list of Q objects, one per word
+            Q_list = [Q(**{'ingredients__name__icontains': x}) for x in words]
+
+            # reduce the list of Q objects to a single Q object using OR
+            ingredient_Q = reduce(operator.or_, Q_list)
+
+            # p(ingredient_Q); print '\n'
+
+            # apply the ingredient Q object filter to get the valid recipes
+            recipes = set(recipes.filter(ingredient_Q))
+
+            # p(recipes); print '\n'
+
+            # initialize empty list to eventually hold heaps of recipes
+            heap_list = [[] for i in range(len(words))]
+
+            # populate the heap list
+            for recipe in recipes:
+                match_count = 0
+                for ingredient in recipe.ingredients.all():
+                    for word in words:
+                        if word in ingredient.name:
+                            match_count += 1
+                            continue
+                heap_list[match_count-1].append(recipe)
+
+            # p(heap_list); print '\n'
+
+            for recipe_list in reversed(heap_list):
+                context['recipes'] += recipe_list
+
+        # if no ingredient search was performed
+        else:
+            context['recipes'] = recipes
+
+        # p(query_dict)
+        # p(context)
+
+        # render and return the responsee
+        return render(request, 'main/search-recipes.html', context)
+
+
+class RecipeDetails(View):
+
+    def get(self, request, id):
+        recipe = get_object_or_404(Recipe, pk=id)
+        context = {}
+        context['recipe'] = recipe
+        return render(request, 'main/recipe_details.html', context)
+
+    def put(self, request, id):
+        context = {}
+        recipe = Recipe.objects.get(id=id)

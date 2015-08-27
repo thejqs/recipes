@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
+import markdown
+from docutils.core import publish_parts
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
@@ -94,5 +97,16 @@ STATICFILES_DIRS = (
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# django-markupfield stuff
+def render_rest(markup):
+    parts = publish_parts(source=markup, writer_name='html4css1')
+    return parts['fragment']
+
+MARKUP_FIELD_TYPES = (
+    ('markdown', markdown.markdown),
+)
+
 
 from settings_secret import *
