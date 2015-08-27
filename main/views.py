@@ -17,6 +17,8 @@ from main.forms import UserCreationForm, RecipeForm, IngredientForm
 from main.models import Ingredient, Recipe
 
 # python imports
+# from pprint import pprint as p
+# import heapq
 import itertools
 import operator
 
@@ -194,6 +196,10 @@ class SearchRecipes(View):
         # get the filter form data from the post request
         form_filters = request.POST
 
+        # create the context and initialize a variable to pur response in
+        context = {}
+        context['recipes'] = []
+
         # extract the filter form data to variables for easier m
         name = form_filters['name']
         rating = form_filters['rating']
@@ -214,60 +220,55 @@ class SearchRecipes(View):
             query_dict['meal'] = meal
         if servings:
             query_dict['servings'] = servings
-        # if ingredients:
-        #     query_dict['ingredients__name__icontains'] = ingredients
 
         # apply the initial filter
         recipes = recipes.filter(**query_dict)
 
-        def all_subsets(input_string):
-            '''
-            Given a comma-delimited string of inputs, returns a dictionary
-            containing lists of all possible subset tuples of the inputs (no
-            duplicates; order disregared).  The dictionary is keyed on the
-            integer length of a given class of subsets (all subsets of length 3
-            are in a list keyed on 3, etc)
-            '''
-            words = input_string.split(',')     # split on commas
-            words = [x.strip() for x in words]  # strip leading/trailing space
-            length = len(words)
-            result = {}
-            for i in range(length):
-                result[length-i] = []
-                for x in itertools.combinations(words, length-i):
-                    result[length-i].append(x)
-            return result
-
-        # get the list of all subsets of ingredient input
         if ingredients:
-            subsets = all_subsets(ingredients)
 
-            # set initial values
-            query_string = 'ingredients__name__icontains'
-            Q_list = []
+            # get the list of all searched words
+            words = ingredients.split(',')
+            words = set([x.strip() for x in words])
 
-            # create a ingredient Q object that is the OR of all subsets
-            for subset_length, subset_list in subsets.iteritems():
-                for subset in subset_list:
-                    subset = subset[0] if len(subset) == 1 else subset
-                    Q_list.append(Q(**{query_string: subset}))
+            # create a list of Q objects, one per word
+            Q_list = [Q(**{'ingredients__name__icontains': x}) for x in words]
 
-            # "reduce" the list of Q objects to one Q object using OR
+            # reduce the list of Q objects to a single Q object using OR
             ingredient_Q = reduce(operator.or_, Q_list)
 
-            from pprint import pprint as p
-            p(ingredient_Q)
+            # p(ingredient_Q); print '\n'
 
-            # apply the ingredient Q object filter
-            recipes = recipes.filter(ingredient_Q)
+            # apply the ingredient Q object filter to get the valid recipes
+            recipes = set(recipes.filter(ingredient_Q))
 
-        # create the context and render a response
-        context = {}
-        context['recipes'] = recipes.distinct()
+            # p(recipes); print '\n'
+
+            # initialize empty list to eventually hold heaps of recipes
+            heap_list = [[] for i in range(len(words))]
+
+            # populate the heap list
+            for recipe in recipes:
+                match_count = 0
+                for ingredient in recipe.ingredients.all():
+                    for word in words:
+                        if word in ingredient.name:
+                            match_count += 1
+                            continue
+                heap_list[match_count-1].append(recipe)
+
+            # p(heap_list); print '\n'
+
+            for recipe_list in reversed(heap_list):
+                context['recipes'] += recipe_list
+
+        # if no ingredient search was performed
+        else:
+            context['recipes'] = recipes
 
         # p(query_dict)
-        p(context)
+        # p(context)
 
+        # render and return the responsee
         return render(request, 'main/search-recipes.html', context)
 
 
