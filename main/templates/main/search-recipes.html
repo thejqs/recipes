@@ -76,7 +76,7 @@
                         {% for ingredient in recipe.ingredients.all %}
                             {{ingredient.quantity}}
                             {{ingredient.get_unit_display}}
-                            {{ingredient.name}}
+                            {{ingredient.name}},
                         {% endfor %}
                     </td>
                     </tr>

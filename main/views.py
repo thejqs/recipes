@@ -1,4 +1,5 @@
 # django imports
+from django.db.models import Q
 from django.forms.models import modelformset_factory
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
@@ -15,9 +16,11 @@ from django.contrib.auth import (
 from main.forms import UserCreationForm, RecipeForm, IngredientForm
 from main.models import Ingredient, Recipe
 
-# Filter imports
+# python imports
+# from pprint import pprint as p
+# import heapq
 import itertools
-from django.db.models import Q
+import operator
 
 
 class RegisterView(View):
@@ -188,93 +191,88 @@ class SearchRecipes(View):
         return render(request, 'main/search-recipes.html', context)
 
     def post(self, request):
-        context = {}
-        query = {}
 
         # TODO - filter this query by user
+
+        # get the queryset of all recipes
         recipes = Recipe.objects.all()
-        filters = request.POST
 
-        name = filters['name']
-        rating = filters['rating']
-        difficulty = filters['difficulty']
-        meal = filters['meal']
-        servings = filters['servings']
-        ingredients = filters['ingredients']
+        # get the filter form data from the post request
+        form_filters = request.POST
 
-        # A function to produce all possible combinations of given ingredients
+        # create the context and initialize a variable to pur response in
+        context = {}
+        context['recipes'] = []
 
-        def combo(input):
-            words = input.split(',')
-            words = [x.strip() for x in words]
-            length = len(words)
-            result = {}
+        # extract the filter form data to variables for easier m
+        name = form_filters['name']
+        rating = form_filters['rating']
+        difficulty = form_filters['difficulty']
+        meal = form_filters['meal']
+        servings = form_filters['servings']
+        ingredients = form_filters['ingredients']
 
-            for i in range(length):
-                result[length-i] = []
-
-                for x in itertools.combinations(words, length-i):
-
-                    result[length-i].append(x)
-            return result
-
-        # Adding the filter criteria to the list of filters
+        # build initial filter (using every field but ingredient):
+        query_dict = {}
         if name:
-            query['name__icontains'] = name
+            query_dict['name__icontains'] = name
         if rating:
-            query['rating'] = rating
+            query_dict['rating'] = rating
         if difficulty:
-            query['difficulty'] = difficulty
+            query_dict['difficulty'] = difficulty
         if meal:
-            query['meal'] = meal
+            query_dict['meal'] = meal
         if servings:
-            query['servings'] = servings
+            query_dict['servings'] = servings
 
-        # pre-filter the list before processing the ingredients
-        first_filter = recipes.filter(**query)
+        # apply the initial filter
+        recipes = recipes.filter(**query_dict)
+
         if ingredients:
 
-            # Testing the number of words being input
-            test = []
-            test = ingredients.split(',')
+            # get the list of all searched words
+            words = ingredients.split(',')
+            words = set([x.strip() for x in words])
 
-            # If there is more than one word, create Q coded filtering
-            if len(test) > 1:
-                ingredient_list = combo(ingredients)
-                query_string = 'ingredients__name__icontains'
-                result_Q = Q(**{query_string: ''})
+            # create a list of Q objects, one per word
+            Q_list = [Q(**{'ingredients__name__icontains': x}) for x in words]
 
-                for category, list_of_combos in ingredient_list.iteritems():
+            # reduce the list of Q objects to a single Q object using OR
+            ingredient_Q = reduce(operator.or_, Q_list)
 
-                    # Check the number of tuples in the lists
-                    if len(list_of_combos) > 1:
-                        # Iterate over the tuples
-                        for combo in list_of_combos:
+            # p(ingredient_Q); print '\n'
 
-                            # Checks how many words are in the tuple
-                            if len(combo) > 1:
-                                for item in combo:
-                                    result_Q = result_Q & Q(
-                                        **{query_string: combo})
-                            # if only one word in the tuple
-                            else:
-                                for position, word in enumerate(combo):
-                                    result_Q = result_Q & Q(
-                                        **{query_string: word})
-                    # If only one tuple in the list
-                    else:
-                        for position, word in enumerate(list_of_combos[0]):
-                            result_Q = result_Q | Q(**{query_string: word})
-                first_filter = first_filter.filter(result_Q).distinct()
+            # apply the ingredient Q object filter to get the valid recipes
+            recipes = set(recipes.filter(ingredient_Q))
 
-            # If there is only one word, filter against that one word
-            else:
-                final = {}
-                final['ingredients__name__icontains'] = ingredients
-                first_filter = first_filter.filter(**final)
+            # p(recipes); print '\n'
 
-        context['recipes'] = first_filter
+            # initialize empty list to eventually hold heaps of recipes
+            heap_list = [[] for i in range(len(words))]
 
+            # populate the heap list
+            for recipe in recipes:
+                match_count = 0
+                for ingredient in recipe.ingredients.all():
+                    for word in words:
+                        if word in ingredient.name:
+                            match_count += 1
+                            continue
+                heap_list[match_count-1].append(recipe)
+
+            # p(heap_list); print '\n'
+
+            for recipe_list in reversed(heap_list):
+                context['recipes'] += recipe_list
+
+        # if no ingredient search was performed
+        else:
+            context['recipes'] = recipes
+
+        # p(query_dict)
+        # p(context)
+
+        # render and return the responsee
         return render(request, 'main/search-recipes.html', context)
 
 
