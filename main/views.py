@@ -167,8 +167,10 @@ class CreateRecipe(View):
 
     def get(self, request):
         context = {}
+        # Makes a model formset based off of the Ingredient Model
         IngredientFormSet = modelformset_factory(
             Ingredient, fields=('name', 'unit', 'quantity'), extra=3)
+        # sets the queryset to none so it isn't pulling in all ingredients
         ingredients = IngredientFormSet(queryset=Ingredient.objects.none())
         context['form'] = RecipeForm
         context['ingr'] = ingredients
