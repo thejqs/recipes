@@ -120,17 +120,17 @@ class LogoutView(View):
 
 def root(request):
     if request.user.is_authenticated():
-        return HomeView.as_view()(request)
+        return SearchRecipes.as_view()(request)
     else:
         return render(request, 'main/landing_page.html')
 
 
-class HomeView(View):
+# class HomeView(View):
 
-    def get(self, request):
-        user = request.user
-        recipes = Recipe
-        return render(request, 'main/landing_page.html')
+#     def get(self, request):
+#         user = request.user
+#         recipes = Recipe
+#         return render(request, 'main/landing_page.html')
 
 
 class CreateRecipe(View):
