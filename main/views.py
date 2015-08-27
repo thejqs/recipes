@@ -15,6 +15,10 @@ from django.contrib.auth import (
 from main.forms import UserCreationForm, RecipeForm, IngredientForm
 from main.models import Ingredient, Recipe
 
+# Filter imports
+import itertools
+from django.db.models import Q
+
 
 class RegisterView(View):
 
@@ -187,6 +191,7 @@ class SearchRecipes(View):
         context = {}
         query = {}
 
+        # TODO - filter this query by user
         recipes = Recipe.objects.all()
         filters = request.POST
 
@@ -197,7 +202,23 @@ class SearchRecipes(View):
         servings = filters['servings']
         ingredients = filters['ingredients']
 
-        # import ipdb; ipdb.set_trace()
+        # A function to produce all possible combinations of given ingredients
+
+        def combo(input):
+            words = input.split(',')
+            words = [x.strip() for x in words]
+            length = len(words)
+            result = {}
+
+            for i in range(length):
+                result[length-i] = []
+
+                for x in itertools.combinations(words, length-i):
+
+                    result[length-i].append(x)
+            return result
+
+        # Adding the filter criteria to the list of filters
         if name:
             query['name__icontains'] = name
         if rating:
@@ -208,9 +229,52 @@ class SearchRecipes(View):
             query['meal'] = meal
         if servings:
             query['servings'] = servings
+
+        # pre-filter the list before processing the ingredients
+        first_filter = recipes.filter(**query)
         if ingredients:
-            query['ingredients__name__icontains'] = ingredients
-        context['recipes'] = recipes.filter(**query)
+
+            # Testing the number of words being input
+            test = []
+            test = ingredients.split(',')
+
+            # If there is more than one word, create Q coded filtering
+            if len(test) > 1:
+                ingredient_list = combo(ingredients)
+                query_string = 'ingredients__name__icontains'
+                result_Q = Q(**{query_string: ''})
+
+                for category, list_of_combos in ingredient_list.iteritems():
+
+                    # Check the number of tuples in the lists
+                    if len(list_of_combos) > 1:
+                        # Iterate over the tuples
+                        for combo in list_of_combos:
+
+                            # Checks how many words are in the tuple
+                            if len(combo) > 1:
+                                for item in combo:
+                                    result_Q = result_Q & Q(
+                                        **{query_string: combo})
+                            # if only one word in the tuple
+                            else:
+                                for position, word in enumerate(combo):
+                                    result_Q = result_Q & Q(
+                                        **{query_string: word})
+                    # If only one tuple in the list
+                    else:
+                        for position, word in enumerate(list_of_combos[0]):
+                            result_Q = result_Q | Q(**{query_string: word})
+                first_filter = first_filter.filter(result_Q).distinct()
+
+            # If there is only one word, filter against that one word
+            else:
+                final = {}
+                final['ingredients__name__icontains'] = ingredients
+                first_filter = first_filter.filter(**final)
+
+        context['recipes'] = first_filter
+
         return render(request, 'main/search-recipes.html', context)
 
 
