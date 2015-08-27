@@ -1,4 +1,5 @@
 # django imports
+from django.db.models import Q
 from django.forms.models import modelformset_factory
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
@@ -14,6 +15,10 @@ from django.contrib.auth import (
 # project imports
 from main.forms import UserCreationForm, RecipeForm, IngredientForm
 from main.models import Ingredient, Recipe
+
+# python imports
+import itertools
+import operator
 
 
 class RegisterView(View):
@@ -182,33 +187,87 @@ class SearchRecipes(View):
         return render(request, 'main/search-recipes.html', context)
 
     def post(self, request):
-        context = {}
-        query = {}
 
+        # get the queryset of all recipes
         recipes = Recipe.objects.all()
-        filters = request.POST
 
-        name = filters['name']
-        rating = filters['rating']
-        difficulty = filters['difficulty']
-        meal = filters['meal']
-        servings = filters['servings']
-        ingredients = filters['ingredients']
+        # get the filter form data from the post request
+        form_filters = request.POST
 
-        # import ipdb; ipdb.set_trace()
+        # extract the filter form data to variables for easier m
+        name = form_filters['name']
+        rating = form_filters['rating']
+        difficulty = form_filters['difficulty']
+        meal = form_filters['meal']
+        servings = form_filters['servings']
+        ingredients = form_filters['ingredients']
+
+        # build initial filter (using every field but ingredient):
+        query_dict = {}
         if name:
-            query['name__icontains'] = name
+            query_dict['name__icontains'] = name
         if rating:
-            query['rating'] = rating
+            query_dict['rating'] = rating
         if difficulty:
-            query['difficulty'] = difficulty
+            query_dict['difficulty'] = difficulty
         if meal:
-            query['meal'] = meal
+            query_dict['meal'] = meal
         if servings:
-            query['servings'] = servings
+            query_dict['servings'] = servings
+        # if ingredients:
+        #     query_dict['ingredients__name__icontains'] = ingredients
+
+        # apply the initial filter
+        recipes = recipes.filter(**query_dict)
+
+        def all_subsets(input_string):
+            '''
+            Given a comma-delimited string of inputs, returns a dictionary
+            containing lists of all possible subset tuples of the inputs (no
+            duplicates; order disregared).  The dictionary is keyed on the
+            integer length of a given class of subsets (all subsets of length 3
+            are in a list keyed on 3, etc)
+            '''
+            words = input_string.split(',')     # split on commas
+            words = [x.strip() for x in words]  # strip leading/trailing space
+            length = len(words)
+            result = {}
+            for i in range(length):
+                result[length-i] = []
+                for x in itertools.combinations(words, length-i):
+                    result[length-i].append(x)
+            return result
+
+        # get the list of all subsets of ingredient input
         if ingredients:
-            query['ingredients__name__icontains'] = ingredients
-        context['recipes'] = recipes.filter(**query)
+            subsets = all_subsets(ingredients)
+
+            # set initial values
+            query_string = 'ingredients__name__icontains'
+            Q_list = []
+
+            # create a ingredient Q object that is the OR of all subsets
+            for subset_length, subset_list in subsets.iteritems():
+                for subset in subset_list:
+                    subset = subset[0] if len(subset) == 1 else subset
+                    Q_list.append(Q(**{query_string: subset}))
+
+            # "reduce" the list of Q objects to one Q object using OR
+            ingredient_Q = reduce(operator.or_, Q_list)
+
+            from pprint import pprint as p
+            p(ingredient_Q)
+
+            # apply the ingredient Q object filter
+            recipes = recipes.filter(ingredient_Q)
+
+        # create the context and render a response
+        context = {}
+        context['recipes'] = recipes.distinct()
+
+        # p(query_dict)
+        p(context)
+
         return render(request, 'main/search-recipes.html', context)
 
 

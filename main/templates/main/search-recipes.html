@@ -74,8 +74,8 @@
                     <td>This recipe serves {{recipe.servings}}</td>
                     <td>
                         {% for ingredient in recipe.ingredients.all %}
-                            {{ingredient.quantity}}
-                            {{ingredient.unit}}
+                            {# {{ingredient.quantity}} #}
+                            {# {{ingredient.unit}} #}
                             {{ingredient.name}}
                         {% endfor %}
                     </td>
