@@ -137,7 +137,7 @@ class HomeView(View):
     def get(self, request):
         user = request.user
         recipes = Recipe
-        return render(request, 'main/landing_page.html')
+        return SearchRecipes.as_view()(request)
 
 
 class CreateRecipe(View):
