@@ -23,7 +23,10 @@
                             <p>Created: {{ recipe.created }}</p>
                             <p>Modified: {{ recipe.modified }}</p>
                         </div>
-                        <div class="col-sm-6">Source: {{ recipe.source }}</div>
+                        <div class="col-sm-5">Source: {{ recipe.source }}</div>
+                        <div class="col-sm-1">
+                            <a href="{% url 'main:edit_recipe' id=recipe.id %}"><button class="btn btn-default">Edit</button></a>
+                        </div>
                     </div>
                 </div>
             </div>
