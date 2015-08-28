@@ -99,7 +99,7 @@ class RecipeForm(ModelForm):
         attrs={'class': 'form-control'}), choices=DIFFICULTY_CHOICES)
     meal = forms.ChoiceField(widget=forms.Select(
         attrs={'class': 'form-control'}), choices=MEAL_CHOICES)
-    
+
     class Meta:
         model = Recipe
         fields = '__all__'
