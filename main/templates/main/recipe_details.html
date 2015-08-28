@@ -46,7 +46,7 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-sm-12">
-                            <p><strong>Makes <input id="scale-servings" type="text" placeholder="{{ recipe.servings }}"> servings:</strong></p>
+                            <p><strong>Makes <input id="scale-servings" type="text" value="{{ recipe.servings }}"> servings:</strong></p>
                         </div>
                     </div>
                     {% for ingredient in recipe.ingredients.all %}
