@@ -35,41 +35,36 @@
                             <p><strong>Created:</strong> {{ recipe.created }}</p>
                             <p><strong>Modified:</strong> {{ recipe.modified }}</p>
                         </div>
-                        <div class="col-lg-12 hidden-md hidden-sm hidden-xs">
-                            <p><strong>Last cooked:</strong></p>
-                            <ul>
-                                {% for event in recipe.event_set.all %}
-                                    <li>{{ event.created|date:'U' }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <div class="hidden-lg col-md-4 col-sm-4">
-                            <div class="dropdown">
-                                <a class="dropdown-toggle" id="event-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                    Last cooked
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="event-dropdown">
+
+                        {% if recipe.event_set.all.count > 0 %}
+                            <div class="col-lg-12 hidden-md hidden-sm hidden-xs">
+                                <p><button class="btn btn-default">I just cooked this</button></p>
+                                <p><strong>Last cooked:</strong></p>
+                                <ul>
                                     {% for event in recipe.event_set.all %}
-                                        <li>{{ event.created|date:'U' }}</li>
+                                        <li><abbr class="timeago" title="{{ event.created|date:'c' }}">{{ event.created|date:'DATE_FORMAT' }}</abbr></li>
                                     {% endfor %}
                                 </ul>
                             </div>
-                        </div>
+                            <div class="hidden-lg col-md-4 col-sm-4">
+                                <p><button class="btn btn-default">I just cooked this</button></p>
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle" id="event-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        Last cooked
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="event-dropdown">
+                                        {% for event in recipe.event_set.all %}
+                                            <li><abbr class="timeago" title="{{ event.created|date:'c' }}">{{ event.created|date:'DATE_FORMAT' }}</abbr></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
-
-        {# <div class="col-sm-12"> #}
-            {# <div class="panel panel-default"> #}
-                {# <div class="panel-body"> #}
-                {# </div> #}
-            {# </div> #}
-        {# </div> #}
-    {# </div> #}
-
-    {# <div class="row"> #}
 
         <div class="col-md-3 col-sm-6">
             <div class="panel panel-default">
@@ -132,4 +127,5 @@
 {% block js %}
     <script type="text/javascript" src="{% static 'project/js/jquery-ui.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'main/js/recipe_details.js' %}"></script>
+    <script type="text/javascript" src="{% static 'main/js/initialize.timeago.js' %}"></script>
 {% endblock js %}
