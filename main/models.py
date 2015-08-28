@@ -77,3 +77,6 @@ class Event(models.Model):
 
     def __unicode__(self):
         return '{} - {}'.format(self.recipe, self.created)
+
+    class Meta:
+        ordering = ['-created']
