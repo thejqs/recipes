@@ -318,26 +318,27 @@ class EditRecipe(View):
         
         return render(request, 'main/edit_recipe.html', context)
 
-    def put(self, request, id):
+    def post(self, request, id):
         context = {}
         recipe = Recipe.objects.get(id=id)
-        user = request.user.id
-        recipe_id = id
+        recipe_instance = recipe
+        user = request.user
         IngredientFormSet = modelformset_factory(
             Ingredient, fields=('name', 'unit', 'quantity'), extra=3)
         ingredients = IngredientFormSet(
             queryset=Ingredient.objects.filter(recipe=recipe))
-
-        if request.method == 'PUT':
-            formset = IngredientFormSet(request.POST, instance=recipe)
-            recipe_form = RecipeForm(request.POST, instance=ingredients)
+        if request.method == 'POST':
+            formset = IngredientFormSet(request.POST)
+            recipe_form = RecipeForm(request.POST, instance=recipe)
             if recipe_form.is_valid():
-                recipe = recipe_form.save()
+                recipe = recipe_form.save(commit=False)
+                recipe.creator = user
+                recipe.save()
             if formset.is_valid():
                 forms = formset.save(commit=False)
                 for form in forms:
-                    form.recipe = recipe_id
+                    form.recipe = recipe_instance
                     form.save()
-                return HttpResponse(status=204)
+                return redirect('main:recipe_details', id)
 
         return redirect('main/recipes.html')
