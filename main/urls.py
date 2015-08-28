@@ -1,6 +1,12 @@
 from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
-from main.views import root, CreateRecipe, RecipeDetails, SearchRecipes
+from main.views import (
+    root,
+    CreateRecipe,
+    RecipeDetails,
+    SearchRecipes,
+    LogEvent,
+)
 
 urlpatterns = [
     url(r'^$', root, name='root'),
@@ -16,4 +22,8 @@ urlpatterns = [
     url(r'^recipe/(?P<id>[0-9]+)/$',
         login_required(RecipeDetails.as_view()),
         name='recipe_details'),
+
+    url(r'^recipe/(?P<id>[0-9]+)/log/$',
+        LogEvent.as_view(),
+        name='log_event'),
 ]

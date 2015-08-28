@@ -38,22 +38,22 @@
 
                         {% if recipe.event_set.all.count > 0 %}
                             <div class="col-lg-12 hidden-md hidden-sm hidden-xs">
-                                <p><button class="btn btn-default">I just cooked this</button></p>
+                                <p><button class="btn btn-default btn-log-event">I just cooked this</button></p>
                                 <p><strong>Last cooked:</strong></p>
-                                <ul>
+                                <ul class="ul-last-cooked">
                                     {% for event in recipe.event_set.all %}
                                         <li><abbr class="timeago" title="{{ event.created|date:'c' }}">{{ event.created|date:'DATE_FORMAT' }}</abbr></li>
                                     {% endfor %}
                                 </ul>
                             </div>
                             <div class="hidden-lg col-md-4 col-sm-4">
-                                <p><button class="btn btn-default">I just cooked this</button></p>
+                                <p><button class="btn btn-default btn-log-event">I just cooked this</button></p>
                                 <div class="dropdown">
                                     <a class="dropdown-toggle" id="event-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         Last cooked
                                         <span class="caret"></span>
                                     </a>
-                                    <ul class="dropdown-menu" aria-labelledby="event-dropdown">
+                                    <ul class="dropdown-menu ul-last-cooked" aria-labelledby="event-dropdown">
                                         {% for event in recipe.event_set.all %}
                                             <li><abbr class="timeago" title="{{ event.created|date:'c' }}">{{ event.created|date:'DATE_FORMAT' }}</abbr></li>
                                         {% endfor %}
@@ -121,6 +121,8 @@
             </div>
         </div>
     </div>
+
+    <span id="recipe-id" hidden>{{ recipe.id }}</span>
 
 {% endblock content %}
 
