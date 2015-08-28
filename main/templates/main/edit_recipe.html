@@ -1,0 +1,69 @@
+{% extends "main/base.html" %}
+{% load staticfiles %}
+{% block content %}
+    <h1>Edit: {{recipe.name}}</h1>
+    <form action="" method="PUT" id="edit-recipe-form" recipe-id="{{recipe.id}}">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="hidden" name="id" value="{{recipe.id}}">
+            <input type="hidden" name="creator" value="{{recipe.creator}}">
+        </div>
+        <div class="form-group">
+            {{form.name.label_tag}}
+            {{form.name}}
+        </div>
+        <div class="form-group">
+            {{form.instructions.label_tag}}
+            {{form.instructions}}
+        </div>
+        <div class="form-group">
+            {{form.notes.label_tag}}
+            {{form.notes}}
+        </div>
+        <div class="form-group">
+            {{form.source.label_tag}}
+            {{form.source}}
+        </div>
+        <div class="form-group">
+            {{form.servings.label_tag}}
+            {{form.servings}}
+        </div>
+        <div class="form-group">
+            {{form.rating.label_tag}}
+            {{form.rating}}
+        </div>
+        <div class="form-group">
+            {{form.difficulty.label_tag}}
+            {{form.difficulty}}
+        </div>
+        <div class="form-group">
+            {{form.meal.label_tag}}
+            {{form.meal}}
+        </div>
+        {% for ingredient in ingredients %}
+            <div class="form-group">
+                {{ingredient.name.label_tag}}
+                {{ingredient.name}}
+            </div>
+            <div class="form-group">
+                {{ingredient.unit.label_tag}}
+                {{ingredient.unit}}
+            </div>
+            <div class="form-group">
+                {{ingredient.quantity.label_tag}}
+                {{ingredient.quantity}}
+            </div>
+            <hr>
+        {% endfor %}
+        <div class="form-group">
+            <button type="submit" class="btn btn-default">Save</button>
+        </div>
+    </form>
+    <hr>
+    <div>
+        <a href="{% url 'main:recipe_details' id=recipe.id %}"><button class="btn btn-default">Cancel</button></a>
+    </div>
+{% endblock content %}
+{% block js %}
+    <script type="text/javascript" src="{% static 'project/js/edit_recipe.js' %}"></script>
+{% endblock js %}

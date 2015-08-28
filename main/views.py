@@ -3,6 +3,8 @@ from django.db.models import Q
 from django.forms.models import modelformset_factory
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
+from django.core import serializers
+from django.http import HttpResponse
 
 # django user authentication imports
 from django.contrib.auth.models import User
@@ -185,17 +187,18 @@ class SearchRecipes(View):
 
     def get(self, request):
         context = {}
-        # TODO filter recipes by user instead of all
-        recipes = Recipe.objects.all()
+        user = request.user.id
+        
+        recipes = Recipe.objects.filter(creator=user)
         context['recipes'] = recipes
         return render(request, 'main/search-recipes.html', context)
 
     def post(self, request):
 
-        # TODO - filter this query by user
+        user = request.user.id
 
         # get the queryset of all recipes
-        recipes = Recipe.objects.all()
+        recipes = Recipe.objects.filter(creator=user)
 
         # get the filter form data from the post request
         form_filters = request.POST
@@ -287,3 +290,54 @@ class RecipeDetails(View):
     def put(self, request, id):
         context = {}
         recipe = Recipe.objects.get(id=id)
+
+
+def recipe_json(request, id):
+    recipe = Recipe.objects.get(id=id)
+    recipe_json = serializers.serialize('json', [recipe])
+
+    return HttpResponse(recipe_json, content_type='application/json')
+
+
+class EditRecipe(View):
+
+    def get(self, request, id):
+        recipe = get_object_or_404(Recipe, pk=id)
+        context = {}
+        form = RecipeForm
+        # Makes a model formset based off of the Ingredient Model
+        IngredientFormSet = modelformset_factory(
+            Ingredient, fields=('name', 'unit', 'quantity'), extra=3)
+        # sets the queryset to include all recipe ingredients
+        ingredients = IngredientFormSet(
+            queryset=Ingredient.objects.filter(recipe=recipe))
+
+        context['form'] = form
+        context['recipe'] = recipe
+        context['ingredients'] = ingredients
+        
+        return render(request, 'main/edit_recipe.html', context)
+
+    def put(self, request, id):
+        context = {}
+        recipe = Recipe.objects.get(id=id)
+        user = request.user.id
+        recipe_id = id
+        IngredientFormSet = modelformset_factory(
+            Ingredient, fields=('name', 'unit', 'quantity'), extra=3)
+        ingredients = IngredientFormSet(
+            queryset=Ingredient.objects.filter(recipe=recipe))
+
+        if request.method == 'PUT':
+            formset = IngredientFormSet(request.POST, instance=recipe)
+            recipe_form = RecipeForm(request.POST, instance=ingredients)
+            if recipe_form.is_valid():
+                recipe = recipe_form.save()
+            if formset.is_valid():
+                forms = formset.save(commit=False)
+                for form in forms:
+                    form.recipe = recipe_id
+                    form.save()
+                return HttpResponse(status=204)
+
+        return redirect('main/recipes.html')

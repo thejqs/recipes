@@ -16,7 +16,7 @@ $(document).ready(function(){
 
         // updates the total form count
         var forms = parseInt($('#id_form-TOTAL_FORMS').val(), 10);
-		forms += 1
-		$('#id_form-TOTAL_FORMS').val(forms);
+        forms += 1
+        $('#id_form-TOTAL_FORMS').val(forms);
     })
 })
