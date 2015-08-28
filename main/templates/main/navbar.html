@@ -1,0 +1,65 @@
+{% load staticfiles %}
+
+<nav class="navbar navbar-default">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#message-board-nav-collapse" aria-expanded="true">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand{# brand-name #}" href="{% url 'main:root' %}">
+                Recipes
+            </a>
+            
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="message-board-nav-collapse">
+            {# <ul class="nav navbar-nav"> #}
+                {# <li> #}
+                    {# <span class='btn-group' style='margin-right:8px'> #}
+                        {# <a type='button' href="{% url 'main:sell_list' %}" class='navbar-btn btn btn-default'>Sell Orders</a> #}
+                        {# <a type='button' href="{% url 'main:order_form' %}" class='navbar-btn btn btn-default'><span class='glyphicon glyphicon-plus'></span></a> #}
+                    {# </span> #}
+                {# </li> #}
+                {# <li> #}
+                {# <span class='btn-group'> #}
+                        {# <a type='button' href="#" class='navbar-btn btn btn-default'>Buy Orders</a> #}
+                        {# <a type='button' href="#" class='navbar-btn btn btn-default'><span class='glyphicon glyphicon-plus'></span></a> #}
+                    {# </span> #}
+                {# </li> #}
+            {# </ul> #}
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Developer Menu<span class="caret nav-caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'admin:index' %}">Admin Panel</a></li>
+                        <li><a href="{% url 'register' %}">Register</a></li>
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                        <li><a href="{% url 'password_reset' %}">Password Reset</a></li>
+                        <li><a href="{% url 'main:create_recipe' %}">Create Recipe</a></li>
+                        <li><a href="{% url 'main:search_recipes' %}">Search Recipes</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.username }}<span class="caret nav-caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'register' %}" class="text-primary">Register</a></li>
+                    <li><a href="{% url 'login' %}" class="text-primary">Login</a></li>
+                {% endif %}
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>

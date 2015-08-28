@@ -1,0 +1,101 @@
+{% extends "main/base.html" %}
+
+{% load staticfiles %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'main/css/recipe_details.css' %}">
+{% endblock css %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+           <h1 class="text-center">{{recipe.name}}</h1>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p>Meal: {{ recipe.get_meal_display }} for {{ recipe.servings }}</p>
+                            <p>Rating: {{ recipe.rating }} stars</p>
+                            <p>Difficulty: {{ recipe.get_difficulty_display }}</p>
+                        </div>
+                        <div class="col-sm-3">
+                            <p>Created: {{ recipe.created }}</p>
+                            <p>Modified: {{ recipe.modified }}</p>
+                        </div>
+                        <div class="col-sm-6">Source: {{ recipe.source }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span>Ingredients</span>
+                    <span class="pull-right">Edit (TODO)</span>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p><strong>Makes <input id="scale-servings" type="text" value="{{ recipe.servings }}"> servings:</strong></p>
+                        </div>
+                    </div>
+                    {% for ingredient in recipe.ingredients.all %}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <p>
+                                    <span class="ingredient-quantity">{{ingredient.quantity}}</span>
+                                    {{ingredient.get_unit_display}}
+                                    {{ingredient.name}}
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-md-6 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span>Instructions</span>
+                    <span class="pull-right">Edit (TODO)</span>
+                </div>
+                <div class="panel-body">
+                    {{ recipe.instructions }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-12">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span>Notes</span>
+                            <span class="pull-right">Edit (TODO)</span>
+                        </div>
+                        <div class="panel-body">
+                            {{ recipe.notes }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'project/js/jquery-ui.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'main/js/recipe_details.js' %}"></script>
+{% endblock js %}

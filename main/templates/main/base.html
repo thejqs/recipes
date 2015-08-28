@@ -10,19 +10,22 @@
         
         {% block css %}{% endblock css %}
         <link rel="stylesheet" href="{% static 'project/bootstrap/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'project/css/recipe.css' %}">
     </head>
 
     <body>
 
-        {# {% include "project/navbar.html" %} #}
+        {% include "main/navbar.html" %}
 
-        {% block content %}
-        {% endblock content %}
+        <div class="container">
+            {% block content %}{% endblock content %}
+        </div>
 
         {# {% include "project/footer.html" %} #}
 
         <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
         <script type="text/javascript" src="{% static 'project/bootstrap/js/bootstrap.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'project/js/recipe.js' %}"></script>
         {# <script type="text/javascript" src="{% static 'project/js/timeago.js' %}"></script> #}
         {% block js %}{% endblock js %}
     </body>
