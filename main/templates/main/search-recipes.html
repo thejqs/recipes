@@ -6,13 +6,13 @@
         <form action="" method="post">
             {% csrf_token %}
             <div class="row">
-            <table class="filters col-md-offset-1 col-md-10">
-                <tr>
-                    <th>
-                        <input type="text" name="name" placeholder="Name">
+            <table class="filters col-md-offset-1 col-md-10 form-group">
+                <tr class="form-group">
+                    <th class="form-group">
+                        <input type="text" name="name" placeholder="Name" class="form-control">
                     </th>
-                    <th>
-                        <select name="rating" id="">
+                    <th class="form-group">
+                        <select name="rating" id="" class="form-control">
                             <option value="">Rating</option>
                             <option value="0">0</option>
                             <option value="1">1</option>
@@ -22,16 +22,16 @@
                             <option value="5">5</option>
                         </select>
                     </th>
-                    <th>
-                        <select name="difficulty" id="">
+                    <th class="form-group">
+                        <select name="difficulty" id="" class="form-control">
                             <option value="">Difficulty</option>
                             <option value="1">Easy</option>
                             <option value="2">Medium</option>
                             <option value="3">Hard</option>
                         </select>
                     </th>
-                    <th>
-                        <select name="meal" id="">
+                    <th class="form-group">
+                        <select name="meal" id="" class="form-control">
                             <option value="">Meal Type</option>
                             <option value="0">0</option>
                             <option value="1">Breakfast</option>
@@ -41,13 +41,13 @@
                             <option value="5">Dessert</option>
                         </select>
                     </th>
-                    <th>
-                        <input type="number" name="servings" placeholder="Serving Size">
+                    <th class="form-group">
+                        <input type="number" name="servings" placeholder="Serving Size" class="form-control">
                     </th>
-                    <th>
-                        <input type="text" name="ingredients" placeholder="Ingredients">
+                    <th class="form-group">
+                        <input type="text" name="ingredients" placeholder="Ingredients" class="form-control">
                     </th>
-                    <th><button type="submit">Search</button></th>
+                    <th class="form-group"><button type="submit" class="btn">Search</button></th>
                 </tr>
             </table>
             </div>
@@ -55,7 +55,7 @@
         <h2><center>Recipes</center></h2>
         <div class="row">
         <table class="col-md-offset-1 col-md-10">
-            <tr>
+            <tr class="recipe-container">
                 <th>Name</th>
                 <th>Rating</th>
                 <th>Difficulty</th>
@@ -64,19 +64,19 @@
                 <th>Ingredients</th>
             </tr>
             {% for recipe in recipes %}
-                <tr >
+                <tr class="recipe-container">
                     <td>
                         <a href="{% url 'main:recipe_details' id=recipe.id %}"><h4>{{recipe.name}}</h4></a>
                     </td>
-                    <td>{{recipe.rating}} star(s)</td>
-                    <td>This is a(n) {{recipe.get_difficulty_display}} recipe</td>
-                    <td>{{recipe.get_meal_display}} meal</td>
-                    <td>This recipe serves {{recipe.servings}}</td>
+                    <td>{{recipe.rating}}</td>
+                    <td>{{recipe.get_difficulty_display}}</td>
+                    <td>{{recipe.get_meal_display}}</td>
+                    <td>{{recipe.servings}}</td>
                     <td>
                         {% for ingredient in recipe.ingredients.all %}
                             {{ingredient.quantity}}
-                            {{ingredient.unit}}
-                            {{ingredient.name}}
+                            {{ingredient.get_unit_display}}
+                            {{ingredient.name}},
                         {% endfor %}
                     </td>
                     </tr>
