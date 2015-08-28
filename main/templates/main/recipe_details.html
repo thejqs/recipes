@@ -13,43 +13,72 @@
         </div>
         <div id="exclude-section" recipe-id="{{recipe.id}}">
             <input type="hidden">
-            <center><button class="btn btn-default" id="exclude-btn">Exclude this from future searches</button></center>
-            <p class="helper text-center">(ie. Don't like it)</p>
+            <center><button class="btn btn-default" id="exclude-btn">Exclude from search</button></center>
         </div>
     </div>
 
     <br>
 
     <div class="row">
-        <div class="col-sm-12">
+
+        <div class="col-lg-3">
             <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span>Information</span>
+                    <span class="pull-right"><a href="{% url 'main:edit_recipe' id=recipe.id %}">Edit Recipe</a></span>
+                </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-sm-3">
-                            <p>Meal: {{ recipe.get_meal_display }} for {{ recipe.servings }}</p>
-                            <p>Rating: {{ recipe.rating }} stars</p>
-                            <p>Difficulty: {{ recipe.get_difficulty_display }}</p>
+                        <div class="col-lg-12 col-md-4 col-sm-4">
+                            <p><strong>Meal:</strong> {{ recipe.get_meal_display }}</p>
+                            <p><strong>Rating:</strong> {{ recipe.rating }} stars</p>
+                            <p><strong>Difficulty:</strong> {{ recipe.get_difficulty_display }}</p>
                         </div>
-                        <div class="col-sm-3">
-                            <p>Created: {{ recipe.created }}</p>
-                            <p>Modified: {{ recipe.modified }}</p>
+                        <div class="col-lg-12 col-md-4 col-sm-4">
+                            <p><strong>Source:</strong> {{ recipe.source }}</p>
+                            <p><strong>Created:</strong> {{ recipe.created }}</p>
+                            <p><strong>Modified:</strong> {{ recipe.modified }}</p>
                         </div>
-                        <div class="col-sm-5">Source: {{ recipe.source }}</div>
-                        <div class="col-sm-1">
-                            <a href="{% url 'main:edit_recipe' id=recipe.id %}"><button class="btn btn-default">Edit</button></a>
-                        </div>
+
+                        {% if recipe.event_set.all.count > 0 %}
+                            <div class="col-lg-12 hidden-md hidden-sm hidden-xs">
+                                <p><button class="btn btn-default btn-log-event">I just cooked this</button></p>
+                                <p><strong>Last cooked:</strong></p>
+                                <ul class="ul-last-cooked">
+                                    {% for event in recipe.event_set.all %}
+                                        <li><abbr class="timeago" title="{{ event.created|date:'c' }}">{{ event.created|date:'DATE_FORMAT' }}</abbr></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="hidden-lg col-md-4 col-sm-4">
+                                <p><button class="btn btn-default btn-log-event">I just cooked this</button></p>
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle" id="event-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        Last cooked
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu ul-last-cooked" aria-labelledby="event-dropdown">
+                                        {% for event in recipe.event_set.all %}
+                                            <li><abbr class="timeago" title="{{ event.created|date:'c' }}">{{ event.created|date:'DATE_FORMAT' }}</abbr></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="col-lg-12 hidden-md hidden-sm hidden-xs">
+                                <p><button class="btn btn-default btn-log-event">I just cooked this</button></p>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row">
         <div class="col-md-3 col-sm-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span>Ingredients</span>
-                    <span class="pull-right">Edit (TODO)</span>
+                    {# <span class="pull-right">Edit (TODO)</span> #}
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -76,7 +105,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span>Instructions</span>
-                    <span class="pull-right">Edit (TODO)</span>
+                    {# <span class="pull-right">Edit (TODO)</span> #}
                 </div>
                 <div class="panel-body">
                     {{ recipe.instructions }}
@@ -84,13 +113,13 @@
             </div>
         </div>
 
-        <div class="col-md-3 col-sm-12">
+        <div class="col-lg-6 col-md-3 col-sm-12">
             <div class="row">
                 <div class="col-sm-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <span>Notes</span>
-                            <span class="pull-right">Edit (TODO)</span>
+                            {# <span class="pull-right">Edit (TODO)</span> #}
                         </div>
                         <div class="panel-body">
                             {{ recipe.notes }}
@@ -101,9 +130,12 @@
         </div>
     </div>
 
+    <span id="recipe-id" hidden>{{ recipe.id }}</span>
+
 {% endblock content %}
 
 {% block js %}
     <script type="text/javascript" src="{% static 'project/js/jquery-ui.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'main/js/recipe_details.js' %}"></script>
+    <script type="text/javascript" src="{% static 'main/js/initialize.timeago.js' %}"></script>
 {% endblock js %}

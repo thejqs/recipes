@@ -1,9 +1,7 @@
 
-// get the recipe's inherent base number of servings
-var base_servings = parseFloat($('#scale-servings').val())
-
-// initialize the "last known good value" of the spinner
-var last_good_value = base_servings
+// get some basic values from the page on first load
+var last_good_value = parseFloat($('#scale-servings').val())
+var recipe_id = parseFloat($('#recipe-id').text())
 
 // initialize the spinner widget and limit it to positive values
 $('#scale-servings').spinner({
@@ -20,8 +18,7 @@ $('#scale-servings').blur(function() {
     $(this).change()
 })
 
-
-// when the input box has a changes event
+// when the input box has a "changes" event
 $('#scale-servings').change(function() {
 
     // get the nenwly updated value from the spinner
@@ -47,3 +44,31 @@ $('#scale-servings').change(function() {
         last_good_value = new_value
     }
 })
+
+// when the button to log an event is pressed
+$('.btn-log-event').click(function() {
+    $.ajax({
+        method: 'POST',
+        url: '/recipe/' + recipe_id + '/log/',
+        beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'))
+        },
+        success: function(data) {
+            // <abbr class="timeago" title="{{ event.created|date:'c' }}">{{ event.created|date:'DATE_FORMAT' }}</abbr>
+            var ul_last_cooked = $('.ul-last-cooked')
+            var time_elem = '<li><abbr class="timeago" title="' + data.iso_date_time + '">' + data.nice_date_time + '</abbr></li>'
+            ul_last_cooked.prepend(time_elem)
+            $(".ul-last-cooked abbr.timeago").timeago()
+        },
+    })
+})
+
+
+/**
+ * Helper fuction for POSTing with ajax
+ */
+function getCookie(name) {
+    var value = '; ' + document.cookie
+    var parts = value.split('; ' + name + '=')
+    if (parts.length == 2) return parts.pop().split(";").shift()
+}

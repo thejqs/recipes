@@ -1,6 +1,8 @@
 # django imports
+from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.forms.models import modelformset_factory
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
 from django.core import serializers
@@ -16,13 +18,15 @@ from django.contrib.auth import (
 
 # project imports
 from main.forms import UserCreationForm, RecipeForm, IngredientForm
-from main.models import Ingredient, Recipe
+from main.models import Ingredient, Recipe, Event
 
 # python imports
 # from pprint import pprint as p
 # import heapq
 import itertools
 import operator
+import json
+import datetime
 
 
 class RegisterView(View):
@@ -336,3 +340,23 @@ class EditRecipe(View):
                 return redirect('main:recipe_details', id)
 
         return redirect('main/recipes.html')
+
+
+class LogEvent(View):
+
+    def get(self, request, id):
+        return HttpResponseRedirect(reverse('main:recipe_details',
+                                            kwargs={'id': id}))
+
+    def post(self, request, id):
+        if request.user.is_authenticated():
+            recipe = get_object_or_404(Recipe, pk=id)
+            event = Event.objects.create(recipe=recipe)
+
+            data = json.dumps({
+                'iso_date_time': event.created.isoformat(),
+                'nice_date_time': event.created.strftime('%b. %d, %Y'),
+            })
+            return HttpResponse(data, content_type='application/json')
+        else:
+            return HttpResponse(status=403)
