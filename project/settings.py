@@ -109,4 +109,9 @@ MARKUP_FIELD_TYPES = (
 )
 
 
+# handles where users are directed to login and after login
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+
+
 from settings_secret import *
