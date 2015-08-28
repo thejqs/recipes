@@ -180,7 +180,7 @@ class SearchRecipes(View):
     def get(self, request):
         context = {}
         user = request.user.id
-        
+
         recipes = Recipe.objects.filter(creator=user)
         context['recipes'] = recipes
         return render(request, 'main/search-recipes.html', context)
@@ -280,8 +280,10 @@ class RecipeDetails(View):
         return render(request, 'main/recipe_details.html', context)
 
     def put(self, request, id):
-        context = {}
         recipe = Recipe.objects.get(id=id)
+        recipe.exclude_from_search = True
+        recipe.save()
+        return HttpResponse(status=204)
 
 
 def recipe_json(request, id):
@@ -307,7 +309,7 @@ class EditRecipe(View):
         context['form'] = form
         context['recipe'] = recipe
         context['ingredients'] = ingredients
-        
+
         return render(request, 'main/edit_recipe.html', context)
 
     def post(self, request, id):

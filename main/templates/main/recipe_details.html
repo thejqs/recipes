@@ -11,6 +11,11 @@
         <div class="col-xs-12">
            <h1 class="text-center">{{recipe.name}}</h1>
         </div>
+        <div id="exclude-section" recipe-id="{{recipe.id}}">
+            <input type="hidden">
+            <center><button class="btn btn-default" id="exclude-btn">Exclude this from future searches</button></center>
+            <p class="helper text-center">(ie. Don't like it)</p>
+        </div>
     </div>
 
     <br>
