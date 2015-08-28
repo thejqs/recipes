@@ -1,6 +1,12 @@
 {% extends "main/base.html" %}
-{% block content %}
 
+{% load staticfiles %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'main/css/recipe_details.css' %}">
+{% endblock css %}
+
+{% block content %}
     <div class="row">
         <div class="col-xs-12">
            <h1 class="text-center">{{recipe.name}}</h1>
@@ -43,14 +49,14 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-sm-12">
-                            <p><strong>Makes {{ recipe.servings }} servings:</strong></p>
+                            <p><strong>Makes <input id="scale-servings" type="text" value="{{ recipe.servings }}"> servings:</strong></p>
                         </div>
                     </div>
                     {% for ingredient in recipe.ingredients.all %}
                         <div class="row">
                             <div class="col-sm-12">
                                 <p>
-                                    {{ingredient.quantity}}
+                                    <span class="ingredient-quantity">{{ingredient.quantity}}</span>
                                     {{ingredient.get_unit_display}}
                                     {{ingredient.name}}
                                 </p>
@@ -91,3 +97,8 @@
     </div>
 
 {% endblock content %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'project/js/jquery-ui.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'main/js/recipe_details.js' %}"></script>
+{% endblock js %}
