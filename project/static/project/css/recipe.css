@@ -1,3 +1,7 @@
 .recipe-container {
 	border: solid #efefef;
 }
+
+.exclude-recipe {
+    display: none;
+}

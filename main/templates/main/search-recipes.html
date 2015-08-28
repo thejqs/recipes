@@ -8,6 +8,10 @@
             <div class="row">
             <table class="filters col-md-offset-1 col-md-10 form-group">
                 <tr class="form-group">
+                    <th>
+                        <label>Exclude disliked?</label>
+                        <input type="checkbox" name="exclude" value="exclude" id="exclude-results" checked="checked">
+                    </th>
                     <th class="form-group">
                         <input type="text" name="name" placeholder="Name" class="form-control">
                     </th>
@@ -64,7 +68,7 @@
                 <th>Ingredients</th>
             </tr>
             {% for recipe in recipes %}
-                <tr class="recipe-container">
+                <tr class="recipe-container {% if recipe.exclude_from_search %} exclude-recipe {% endif %}">
                     <td>
                         <a href="{% url 'main:recipe_details' id=recipe.id %}"><h4>{{recipe.name}}</h4></a>
                     </td>
