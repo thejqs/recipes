@@ -7,7 +7,7 @@ var last_good_value = base_servings
 
 // initialize the spinner widget and limit it to positive values
 $('#scale-servings').spinner({
-    min: 0,
+    min: 1,
 })
 
 // when a spinner button is clicked, make the input fire a change event
@@ -27,8 +27,8 @@ $('#scale-servings').change(function() {
     // get the nenwly updated value from the spinner
     var new_value = parseFloat($(this).val())
 
-    // if the value is not a number, reset it to the last known good value
-    if (isNaN(new_value)) {
+    // if the value is invalid, reset it to the last known good value
+    if (isNaN(new_value) | new_value < 1) {
         $('#scale-servings').spinner('value', last_good_value)
 
     // if the value is a valid number
