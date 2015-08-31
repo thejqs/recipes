@@ -1,4 +1,5 @@
 {% extends "main/base.html" %}
+{% load customfilters %}
 
 {% block content %}
  <h1>Create a recipe!</h1>
@@ -6,17 +7,36 @@
          {% csrf_token %}
          <input type="hidden" name="creator" value="{{user.id}}">
          <div class="form-group">
-            {{form.as_p}}
+            <div class="row">
+                <div class="col-sm-6">{{ form.name }}</div>
+                <div class="col-sm-6">{{ form.source }}</div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-sm-3">{{ form.rating }}</div>
+                <div class="col-sm-3">{{ form.difficulty }}</div>
+                <div class="col-sm-3">{{ form.meal }}</div>
+                <div class="col-sm-3">{{ form.servings }}</div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-sm-6">{{ form.instructions }}</div>
+                <div class="col-sm-6">{{ form.notes }}</div>
+            </div>
+            {# {{form.as_p}} #}
          </div>
          <div class="form-group" id="ingredient-entry">
             <table class="form-group">
                 {{ingr.management_form}}
                 <div id="items-form-container">
                 {% for form in ingr %}
-                    <div id="item-{{ forloop.counter0 }}">
+                    <div class='row' id="item-{{ forloop.counter0 }}">
                         {{form.id}}
-                        {{form.as_p}}
+                        <div class="col-sm-4">{{form.name|classholder:'form-control, Ingredient Name'}}</div>
+                        <div class="col-sm-4">{{form.unit|addclass:'form-control'}}</div>
+                        <div class="col-sm-4">{{form.quantity|classholder:'form-control, Enter Quantity'}}</div>
                     </div>
+                    <br>
                 {% endfor %}
 
                 </div>
@@ -29,12 +49,16 @@
          <div class="form-group">
             <button id="add-ingredient" class="btn add-ingredient">Add Ingredient</button>
          </div>
-         <button type="submit">Submit</button>
+         <button class='btn btn-default' type="submit">Submit</button>
      </form>
     <script type="text/html" id="item-template">
-        <div id="item-__prefix__">
-            {{ingr.empty_form}}
+        <div class='row' id="item-__prefix__">
+            {# {{ingr.empty_form}} #}
+            <div class="col-sm-4">{{ingr.empty_form.name|classholder:'form-control, Ingredient Name'}}</div>
+            <div class="col-sm-4">{{ingr.empty_form.unit|addclass:'form-control'}}</div>
+            <div class="col-sm-4">{{ingr.empty_form.quantity|classholder:'form-control, Enter Quantity'}}</div>
         </div>
+        <br>
     </script>
 
 {% endblock content %}
