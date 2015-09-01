@@ -8,6 +8,7 @@ from django.views.generic import View
 from django.core import serializers
 from django.http import HttpResponse
 import re
+import urllib
 
 # django user authentication imports
 from django.contrib.auth.models import User
@@ -316,10 +317,17 @@ class EditRecipe(View):
             pattern = '(\S+)\.(\S+)\/'
             recipe_url_match = re.search(pattern, '%s' % recipe.source)
             if recipe_url_match is not None:
-                recipe_url_final = recipe_url.group()
-                context['is_url'] = True
+                recipe_url_final = recipe_url_match.group()
+                click = urllib.urlopen(recipe_url_final)
+                if click.getcode() == 200:
+                    context['is_url'] = True
+                    # print context['is_url']
+                else:
+                    context['is_url'] = False
+                    # print context['is_url']
             else:
                 context['is_url'] = False
+                # print context['is_url']
         else:
             context['is_url'] = False
         context['recipe'] = recipe
