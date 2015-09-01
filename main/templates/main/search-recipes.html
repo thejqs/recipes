@@ -61,34 +61,67 @@
         </form>
         <h2><center>Recipes</center></h2>
         <div class="row">
-            <table class="col-sm-12">
+
+            {% for recipe in recipes %}
+                <div class="recipe-container {% if recipe.exclude_from_search %} exclude-recipe {% endif %}">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a href="{% url 'main:recipe_details' id=recipe.id %}"><span class='recipe-title'>{{recipe.name}}</span></a>
+                            <span class="pull-right">
+                                <div class='recipe-rating rating{{ recipe.rating }}'>{{ recipe.rating }}</div>
+                            </span>
+                            <span class='pull-right'>Last Made:  
+                                {% if recipe.event_set.all.count > 0 %}
+                                    <abbr class="timeago" title="{{ recipe.event_set.latest.created|date:'c' }}">{{ recipe.event_set.latest.created|date:'DATE_FORMAT' }}</abbr>
+                                    {# {{ recipe.event_set.latest.created }} #}
+                                {% else %}
+                                    Never
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="panel-body">
+                            <div class='col-xs-5 col-sm-2'>Difficulty: {{recipe.get_difficulty_display}}</div>
+                            <div class="col-xs-7 col-sm-2">Meal: {{recipe.get_meal_display}}</div>
+                            <div class="col-xs-12 col-sm-8">Ingredients: 
+                                {% for ingredient in recipe.ingredients.all %}
+                                    {{ingredient.name|title}}
+                                    {% if not forloop.last %},{% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <!--<table class="col-sm-12">
                 <tr class="recipe-container">
                     <th>Name</th>
-                    <th>Rating</th>
-                    <th>Difficulty</th>
                     <th>Meal Type</th>
-                    <th>Servings</th>
+                    <th>Difficulty</th>
                     <th>Ingredients</th>
+                    <th>Rating</th>
                 </tr>
                 {% for recipe in recipes %}
                     <tr class="recipe-container {% if recipe.exclude_from_search %} exclude-recipe {% endif %}">
                         <td>
                             <a href="{% url 'main:recipe_details' id=recipe.id %}"><h4>{{recipe.name}}</h4></a>
                         </td>
-                        <td>{{recipe.rating}}</td>
-                        <td>{{recipe.get_difficulty_display}}</td>
                         <td>{{recipe.get_meal_display}}</td>
-                        <td>{{recipe.servings}}</td>
+                        <td>{{recipe.get_difficulty_display}}</td>
                         <td>
                             {% for ingredient in recipe.ingredients.all %}
-                                {{ingredient.quantity}}
-                                {{ingredient.get_unit_display}}
-                                {{ingredient.name}},
+                                {{ingredient.name}}
+                                {% if not forloop.last %},{% endif %}
                             {% endfor %}
                         </td>
-                        </tr>
+                        <td>{{recipe.rating}}</td>
+                    </tr>
                 {% endfor %}
-            </table>
+            </table>-->
         </div>
     </div>
 {% endblock content %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'main/js/initialize.timeago.js' %}"></script>
+{% endblock js %}

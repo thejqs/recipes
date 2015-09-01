@@ -2,10 +2,51 @@
     display: none;
 }
 
-.recipe-container {
-	border: solid #efefef;
-}
-
 .exclude-recipe {
     display: none;
+}
+
+.recipe-container {
+	/*border: solid #efefef;*/
+}
+
+.recipe-title {
+    padding-right: 10%;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.recipe-rating {
+    margin-left: 50px;
+    width: 20px;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    color: black;
+}
+
+.rating1 {
+    background-color: red;
+    border-color: red;
+}
+
+.rating2 {
+    background-color: #CD6407;
+    border-color: #CD6407;
+}
+
+.rating3 {
+    background-color: #CBCB00;
+    border-color: #CBCB00;
+}
+
+.rating4 {
+    background-color: #7CC010;
+    border-color: #7CC010;
+}
+
+.rating5 {
+    background-color: green;
+    border-color: green;
 }

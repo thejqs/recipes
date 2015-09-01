@@ -189,6 +189,7 @@ class SearchRecipes(View):
 
         recipes = Recipe.objects.filter(creator=user)
         context['recipes'] = recipes
+        context['events'] = Event.objects.all()
         return render(request, 'main/search-recipes.html', context)
 
     def post(self, request):
