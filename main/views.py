@@ -306,7 +306,7 @@ class EditRecipe(View):
         form = RecipeForm
         # Makes a model formset based off of the Ingredient Model
         IngredientFormSet = modelformset_factory(
-            Ingredient, fields=('name', 'unit', 'quantity'), extra=3)
+            Ingredient, fields=('name', 'unit', 'quantity'), extra=2)
         # sets the queryset to include all recipe ingredients
         ingredients = IngredientFormSet(
             queryset=Ingredient.objects.filter(recipe=recipe))
