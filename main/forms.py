@@ -87,7 +87,7 @@ class RecipeForm(ModelForm):
         attrs={'class': 'form-control', 'placeholder': 'Name'}))
     instructions = forms.CharField(widget=forms.Textarea(
         attrs={'class': 'form-control', 'placeholder': 'Instructions'}))
-    notes = forms.CharField(widget=forms.TextInput(
+    notes = forms.CharField(widget=forms.Textarea(
         attrs={'class': 'form-control', 'placeholder': 'Recipe Notes'}))
     source = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control',
