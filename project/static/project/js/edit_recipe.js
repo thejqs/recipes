@@ -16,8 +16,8 @@ function loadRecipe(){
         var difficulty = data[0].fields.difficulty
 
         $('#edit-recipe-form input[name="name"]').val(name);
-        $('#edit-recipe-form input[name="instructions"]').val(instructions);
-        $('#edit-recipe-form input[name="notes"]').val(notes);
+        $('#edit-recipe-form textarea[name="instructions"]').val(instructions);
+        $('#edit-recipe-form textarea[name="notes"]').val(notes);
         $('#edit-recipe-form input[name="source"]').val(source);
         $('#edit-recipe-form input[name="servings"]').val(servings);
         $('#edit-recipe-form select[name="rating"]').val(rating);

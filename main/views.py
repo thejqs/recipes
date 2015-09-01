@@ -144,11 +144,11 @@ class CreateRecipe(View):
         context = {}
         # Makes a model formset based off of the Ingredient Model
         IngredientFormSet = modelformset_factory(
-            Ingredient, fields=('name', 'unit', 'quantity'), extra=3)
+            Ingredient, fields=('name', 'unit', 'quantity'), extra=2)
         # sets the queryset to none so it isn't pulling in all ingredients
         ingredients = IngredientFormSet(queryset=Ingredient.objects.none())
         context['form'] = RecipeForm
-        context['ingr'] = ingredients
+        context['ingredients'] = ingredients
         if request.method == 'POST':
             formset = IngredientFormSet(request.POST)
             recipe_form = RecipeForm(request.POST)
@@ -170,11 +170,11 @@ class CreateRecipe(View):
         context = {}
         # Makes a model formset based off of the Ingredient Model
         IngredientFormSet = modelformset_factory(
-            Ingredient, fields=('name', 'unit', 'quantity'), extra=3)
+            Ingredient, fields=('name', 'unit', 'quantity'), extra=2)
         # sets the queryset to none so it isn't pulling in all ingredients
         ingredients = IngredientFormSet(queryset=Ingredient.objects.none())
         context['form'] = RecipeForm
-        context['ingr'] = ingredients
+        context['ingredients'] = ingredients
 
         return render(request, 'main/create-recipe.html', context)
 
@@ -305,7 +305,7 @@ class EditRecipe(View):
         form = RecipeForm
         # Makes a model formset based off of the Ingredient Model
         IngredientFormSet = modelformset_factory(
-            Ingredient, fields=('name', 'unit', 'quantity'), extra=3)
+            Ingredient, fields=('name', 'unit', 'quantity'), extra=1)
         # sets the queryset to include all recipe ingredients
         ingredients = IngredientFormSet(
             queryset=Ingredient.objects.filter(recipe=recipe))
@@ -322,7 +322,7 @@ class EditRecipe(View):
         recipe_instance = recipe
         user = request.user
         IngredientFormSet = modelformset_factory(
-            Ingredient, fields=('name', 'unit', 'quantity'), extra=3)
+            Ingredient, fields=('name', 'unit', 'quantity'), extra=1)
         ingredients = IngredientFormSet(
             queryset=Ingredient.objects.filter(recipe=recipe))
         if request.method == 'POST':

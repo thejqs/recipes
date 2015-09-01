@@ -1,10 +1,12 @@
 {% extends "main/base.html" %}
+{% load staticfiles %}
 {% load customfilters %}
 
 {% block content %}
  <h1>Create a recipe!</h1>
-     <form method="POST" action="" id="create-recipe-form">
-         {% csrf_token %}
+    <form method="POST" action="" id="create-recipe-form">
+        {% include 'main/recipe_template.html' %}
+         <!--{% csrf_token %}
          <input type="hidden" name="creator" value="{{user.id}}">
          <div class="form-group">
             <div class="row">
@@ -13,52 +15,56 @@
             </div>
             <br>
             <div class="row">
-                <div class="col-sm-3">{{ form.rating }}</div>
-                <div class="col-sm-3">{{ form.difficulty }}</div>
-                <div class="col-sm-3">{{ form.meal }}</div>
-                <div class="col-sm-3">{{ form.servings }}</div>
+                <div class="col-xs-6 col-sm-3">{{ form.meal }}</div>
+                <div class="col-xs-6 col-sm-3">{{ form.servings }}</div>
+                <div class="col-xs-6 col-sm-3">{{ form.difficulty }}</div>
+                <div class="col-xs-6 col-sm-3">{{ form.rating }}</div>
             </div>
             <br>
             <div class="row">
                 <div class="col-sm-6">{{ form.instructions }}</div>
                 <div class="col-sm-6">{{ form.notes }}</div>
             </div>
-            {# {{form.as_p}} #}
          </div>
          <div class="form-group" id="ingredient-entry">
-            <table class="form-group">
+            <div class="form-group">
                 {{ingr.management_form}}
                 <div id="items-form-container">
-                {% for form in ingr %}
-                    <div class='row' id="item-{{ forloop.counter0 }}">
-                        {{form.id}}
-                        <div class="col-sm-4">{{form.name|classholder:'form-control, Ingredient Name'}}</div>
-                        <div class="col-sm-4">{{form.unit|addclass:'form-control'}}</div>
-                        <div class="col-sm-4">{{form.quantity|classholder:'form-control, Enter Quantity'}}</div>
-                    </div>
-                    <br>
-                {% endfor %}
-
+                    {% for form in ingr %}
+                        <div class='row' id="item-{{ forloop.counter0 }}">
+                            {{form.id}}
+                            <div class="col-xs-4">{{form.name|classholder:'form-control, Ingredient Name'}}</div>
+                            <div class="col-xs-4">{{form.unit|addclass:'form-control'}}</div>
+                            <div class="col-xs-4">{{form.quantity|classholder:'form-control, Enter Quantity'}}</div>
+                        </div>
+                        <br>
+                    {% endfor %}
                 </div>
-                <!--
-                {{ ingredient_forms.empty_form }}
-                -->
-
-            </table>
+            </div>
          </div>
          <div class="form-group">
             <button id="add-ingredient" class="btn add-ingredient">Add Ingredient</button>
          </div>
          <button class='btn btn-default' type="submit">Submit</button>
      </form>
-    <script type="text/html" id="item-template">
+     {# hidden, used for adding new ingredient #}
+    <div id="item-template">
         <div class='row' id="item-__prefix__">
-            {# {{ingr.empty_form}} #}
-            <div class="col-sm-4">{{ingr.empty_form.name|classholder:'form-control, Ingredient Name'}}</div>
-            <div class="col-sm-4">{{ingr.empty_form.unit|addclass:'form-control'}}</div>
-            <div class="col-sm-4">{{ingr.empty_form.quantity|classholder:'form-control, Enter Quantity'}}</div>
+            {{ingr.empty_form}}
+            {# <div class="col-xs-4">{{ingr.empty_form.name|classholder:'form-control, Ingredient Name'}}</div> #}
+            {# <div class="col-xs-4">{{ingr.empty_form.unit|addclass:'form-control'}}</div> #}
+            {# <div class="col-xs-4">{{ingr.empty_form.quantity|classholder:'form-control, Enter Quantity'}}</div> #}
         </div>
         <br>
-    </script>
+    </div>-->
 
 {% endblock content %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'project/js/jquery-ui.min.js' %}"></script>
+    <script type='text/javascript'>
+        $('.ingredient-spinner').spinner({
+        min: 1,
+    </script>
+})
+{% endblock js %}
