@@ -69,9 +69,9 @@ class RecipeForm(ModelForm):
 
     DIFFICULTY_CHOICES = (
         (0, ''),
-        (1, 'Easy'),
-        (2, 'Medium'),
-        (3, 'Hard'),
+        (1, 'Simple'),
+        (2, 'Intermediate'),
+        (3, 'Challenging'),
     )
 
     MEAL_CHOICES = (
@@ -87,10 +87,10 @@ class RecipeForm(ModelForm):
     instructions = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Instructions'}))
     notes = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': 'Notes'}))
+        attrs={'class': 'form-control', 'placeholder': 'cooking notes'}))
     source = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control',
-               'placeholder': 'Where you got the recipe from'}))
+               'placeholder': 'Where did you find this recipe?'}))
     servings = forms.IntegerField(widget=forms.NumberInput(
         attrs={'class': 'form-control'}))
     rating = forms.ChoiceField(widget=forms.Select(

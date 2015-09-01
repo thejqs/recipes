@@ -16,9 +16,9 @@ class Recipe(models.Model):
 
     DIFFICULTY_CHOICES = (
         (0, ''),
-        (1, 'Easy'),
-        (2, 'Medium'),
-        (3, 'Hard'),
+        (1, 'Simple'),
+        (2, 'Intermediate'),
+        (3, 'Challenging'),
     )
 
     MEAL_CHOICES = (
