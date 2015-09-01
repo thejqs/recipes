@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
 from django.core import serializers
 from django.http import HttpResponse
+import re
 
 # django user authentication imports
 from django.contrib.auth.models import User
@@ -311,6 +312,16 @@ class EditRecipe(View):
             queryset=Ingredient.objects.filter(recipe=recipe))
 
         context['form'] = form
+        if recipe.source is not None:
+            pattern = '(\S+)\.(\S+)\/'
+            recipe_url_match = re.search(pattern, '%s' % recipe.source)
+            if recipe_url_match is not None:
+                recipe_url_final = recipe_url.group()
+                context['is_url'] = True
+            else:
+                context['is_url'] = False
+        else:
+            context['is_url'] = False
         context['recipe'] = recipe
         context['ingredients'] = ingredients
 
