@@ -283,6 +283,23 @@ class RecipeDetails(View):
         recipe = get_object_or_404(Recipe, pk=id)
         context = {}
         context['recipe'] = recipe
+        if recipe.source is not None:
+            pattern = '(\S+)\.(\S+)\/'
+            recipe_url_match = re.search(pattern, '%s' % recipe.source)
+            if recipe_url_match is not None:
+                recipe_url_final = recipe_url_match.group()
+                click = urllib.urlopen(recipe_url_final)
+                if click.getcode() == 200:
+                    context['is_url'] = True
+                    # print context['is_url']
+                else:
+                    context['is_url'] = False
+                    # print context['is_url']
+            else:
+                context['is_url'] = False
+                # print context['is_url']
+        else:
+            context['is_url'] = False
         return render(request, 'main/recipe_details.html', context)
 
     def put(self, request, id):
@@ -313,23 +330,6 @@ class EditRecipe(View):
             queryset=Ingredient.objects.filter(recipe=recipe))
 
         context['form'] = form
-        if recipe.source is not None:
-            pattern = '(\S+)\.(\S+)\/'
-            recipe_url_match = re.search(pattern, '%s' % recipe.source)
-            if recipe_url_match is not None:
-                recipe_url_final = recipe_url_match.group()
-                click = urllib.urlopen(recipe_url_final)
-                if click.getcode() == 200:
-                    context['is_url'] = True
-                    # print context['is_url']
-                else:
-                    context['is_url'] = False
-                    # print context['is_url']
-            else:
-                context['is_url'] = False
-                # print context['is_url']
-        else:
-            context['is_url'] = False
         context['recipe'] = recipe
         context['ingredients'] = ingredients
 
