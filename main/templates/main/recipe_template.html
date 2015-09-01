@@ -1,0 +1,77 @@
+{% load customfilters %}
+
+    {% csrf_token %}
+    <input type="hidden" name="creator" value="{{user.id}}">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-6">
+                <h5>{{ form.name.label }}</h5>
+                {{ form.name }}
+            </div>
+            <div class="col-sm-6">
+                <h5>{{ form.source.label }}</h5>
+                {{ form.source }}
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-xs-6 col-sm-3">
+                <h5>{{ form.meal.label }}</h5>
+                {{ form.meal }}
+            </div>
+            <div class="col-xs-6 col-sm-3">
+                <h5>{{ form.servings.label }}</h5>
+                {{ form.servings }}
+            </div>
+            <div class="col-xs-6 col-sm-3">
+                <h5>{{ form.difficulty.label }}</h5>
+                {{ form.difficulty }}
+            </div>
+            <div class="col-xs-6 col-sm-3">
+                <h5>{{ form.rating.label }}</h5>
+                {{ form.rating }}
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-sm-6">
+                <h5>{{ form.instructions.label }}</h5>
+                {{ form.instructions }}
+            </div>
+            <div class="col-sm-6">
+                <h5>{{ form.notes.label }}</h5>
+                {{ form.notes }}
+            </div>
+        </div>
+    </div>
+    <div class="form-group" id="ingredient-entry">
+        <div class="form-group">
+            {{ingredients.management_form}}
+            <div id="items-form-container">
+                {% for form in ingredients %}
+                    <div class='row' id="item-{{ forloop.counter0 }}">
+                        {{form.id}}
+                        <div class="col-xs-4">{{form.name|classholder:'form-control, Ingredient Name'}}</div>
+                        <div class="col-xs-4">{{form.unit|addclass:'form-control'}}</div>
+                        <div class="col-xs-4">{{form.quantity|classholder:'form-control, Enter Quantity'}}</div>
+                    </div>
+                    <br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <button id="add-ingredient" class="btn add-ingredient">Add Ingredient</button>
+    </div>
+    <button class='btn btn-default' type="submit">Submit</button>
+</form>
+{# hidden, used for adding new ingredient #}
+<div id="item-template">
+    <div class='row' id="item-__prefix__">
+        {# {{ingredients.empty_form}} #}
+        <div class="col-xs-4">{{ingredients.empty_form.name|classholder:'form-control, Ingredient Name'}}</div>
+        <div class="col-xs-4">{{ingredients.empty_form.unit|addclass:'form-control'}}</div>
+        <div class="col-xs-4">{{ingredients.empty_form.quantity|classholder:'form-control, Enter Quantity'}}</div>
+    </div>
+    <br>
+</div>

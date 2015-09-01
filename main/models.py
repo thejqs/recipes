@@ -50,6 +50,7 @@ class Recipe(models.Model):
 class Ingredient(models.Model):
 
     UNIT_CHOICES = (
+        ('', 'Unit Type'),
         (1, 'teaspoon'),
         (2, 'dessert spoon'),
         (3, 'tablespoon'),

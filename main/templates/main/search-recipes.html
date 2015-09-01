@@ -5,17 +5,21 @@
         <h2><center>Filters</center></h2>
         <form action="" method="post">
             {% csrf_token %}
-            <div class="row">
-            <table class="filters col-md-offset-1 col-md-10 form-group">
-                <tr class="form-group">
-                    <th>
-                        <label>Exclude disliked?</label>
-                        <input type="checkbox" name="exclude" value="exclude" id="exclude-results" checked="checked">
-                    </th>
-                    <th class="form-group">
+            <div class="filters form-group">
+                <div class="row form-group">
+                    <div class="col-sm-4 form-group">
                         <input type="text" name="name" placeholder="Name" class="form-control">
-                    </th>
-                    <th class="form-group">
+                    </div>
+                    <div class="col-sm-3 form-group">
+                        <input type="number" name="servings" placeholder="Serving Size" class="form-control">
+                    </div>
+                    <div class="col-sm-5 form-group">
+                        <input type="text" name="ingredients" placeholder="Ingredients" class="form-control">
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-sm-3 form-group">
                         <select name="rating" id="" class="form-control">
                             <option value="">Rating</option>
                             <option value="0">0</option>
@@ -25,16 +29,16 @@
                             <option value="4">4</option>
                             <option value="5">5</option>
                         </select>
-                    </th>
-                    <th class="form-group">
+                    </div>
+                    <div class="col-sm-3 form-group">
                         <select name="difficulty" id="" class="form-control">
                             <option value="">Difficulty</option>
                             <option value="1">Easy</option>
                             <option value="2">Medium</option>
                             <option value="3">Hard</option>
                         </select>
-                    </th>
-                    <th class="form-group">
+                    </div>
+                    <div class="col-sm-3 form-group">
                         <select name="meal" id="" class="form-control">
                             <option value="">Meal Type</option>
                             <option value="0">0</option>
@@ -44,48 +48,47 @@
                             <option value="4">Snack</option>
                             <option value="5">Dessert</option>
                         </select>
-                    </th>
-                    <th class="form-group">
-                        <input type="number" name="servings" placeholder="Serving Size" class="form-control">
-                    </th>
-                    <th class="form-group">
-                        <input type="text" name="ingredients" placeholder="Ingredients" class="form-control">
-                    </th>
-                    <th class="form-group"><button type="submit" class="btn">Search</button></th>
-                </tr>
-            </table>
+                    </div>
+                    <div class='col-sm-2'>
+                        <input type="checkbox" name="exclude" value="exclude" id="exclude-results" checked="checked">
+                        <label for='exclude_results'>Exclude disliked?</label>
+                    </div>
+                    <div class="col-sm-1 form-group">
+                        <button type="submit" class="btn">Search</button>
+                    </div>
+                </div>
             </div>
         </form>
         <h2><center>Recipes</center></h2>
         <div class="row">
-        <table class="col-md-offset-1 col-md-10">
-            <tr class="recipe-container">
-                <th>Name</th>
-                <th>Rating</th>
-                <th>Difficulty</th>
-                <th>Meal Type</th>
-                <th>Servings</th>
-                <th>Ingredients</th>
-            </tr>
-            {% for recipe in recipes %}
-                <tr class="recipe-container {% if recipe.exclude_from_search %} exclude-recipe {% endif %}">
-                    <td>
-                        <a href="{% url 'main:recipe_details' id=recipe.id %}"><h4>{{recipe.name}}</h4></a>
-                    </td>
-                    <td>{{recipe.rating}}</td>
-                    <td>{{recipe.get_difficulty_display}}</td>
-                    <td>{{recipe.get_meal_display}}</td>
-                    <td>{{recipe.servings}}</td>
-                    <td>
-                        {% for ingredient in recipe.ingredients.all %}
-                            {{ingredient.quantity}}
-                            {{ingredient.get_unit_display}}
-                            {{ingredient.name}},
-                        {% endfor %}
-                    </td>
-                    </tr>
-            {% endfor %}
-        </table>
+            <table class="col-sm-12">
+                <tr class="recipe-container">
+                    <th>Name</th>
+                    <th>Rating</th>
+                    <th>Difficulty</th>
+                    <th>Meal Type</th>
+                    <th>Servings</th>
+                    <th>Ingredients</th>
+                </tr>
+                {% for recipe in recipes %}
+                    <tr class="recipe-container {% if recipe.exclude_from_search %} exclude-recipe {% endif %}">
+                        <td>
+                            <a href="{% url 'main:recipe_details' id=recipe.id %}"><h4>{{recipe.name}}</h4></a>
+                        </td>
+                        <td>{{recipe.rating}}</td>
+                        <td>{{recipe.get_difficulty_display}}</td>
+                        <td>{{recipe.get_meal_display}}</td>
+                        <td>{{recipe.servings}}</td>
+                        <td>
+                            {% for ingredient in recipe.ingredients.all %}
+                                {{ingredient.quantity}}
+                                {{ingredient.get_unit_display}}
+                                {{ingredient.name}},
+                            {% endfor %}
+                        </td>
+                        </tr>
+                {% endfor %}
+            </table>
         </div>
     </div>
 {% endblock content %}

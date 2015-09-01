@@ -1,3 +1,7 @@
+#item-template {
+    display: none;
+}
+
 .recipe-container {
 	border: solid #efefef;
 }

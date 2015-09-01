@@ -59,7 +59,7 @@ class UserCreationForm(forms.ModelForm):
 
 class RecipeForm(ModelForm):
     RATING_CHOICES = (
-        (0, 0),
+        (0, 'Rating'),
         (1, 1),
         (2, 2),
         (3, 3),
@@ -68,14 +68,15 @@ class RecipeForm(ModelForm):
     )
 
     DIFFICULTY_CHOICES = (
-        (0, ''),
+
+        (0, 'Difficulty'),
         (1, 'Simple'),
         (2, 'Intermediate'),
         (3, 'Challenging'),
     )
 
     MEAL_CHOICES = (
-        (0, ''),
+        (0, 'Meal Type'),
         (1, 'Breakfast'),
         (2, 'Lunch'),
         (3, 'Dinner'),
@@ -84,15 +85,15 @@ class RecipeForm(ModelForm):
     )
     name = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Name'}))
-    instructions = forms.CharField(widget=forms.TextInput(
+    instructions = forms.CharField(widget=forms.Textarea(
         attrs={'class': 'form-control', 'placeholder': 'Instructions'}))
-    notes = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': 'cooking notes'}))
+    notes = forms.CharField(widget=forms.Textarea(
+        attrs={'class': 'form-control', 'placeholder': 'Recipe Notes'}))
     source = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control',
                'placeholder': 'Where did you find this recipe?'}))
     servings = forms.IntegerField(widget=forms.NumberInput(
-        attrs={'class': 'form-control'}))
+        attrs={'class': 'form-control', 'placeholder': 'Servings'}))
     rating = forms.ChoiceField(widget=forms.Select(
         attrs={'class': 'form-control'}), choices=RATING_CHOICES)
     difficulty = forms.ChoiceField(widget=forms.Select(

@@ -1,9 +1,11 @@
 {% extends "main/base.html" %}
 {% load staticfiles %}
+{% load customfilters %}
 {% block content %}
     <h1>Edit: {{recipe.name}}</h1>
     <form action="" method="post" id="edit-recipe-form" recipe-id="{{recipe.id}}">
-        {% csrf_token %}
+    {% include 'main/recipe_template.html' %}
+        <!--{% csrf_token %}
         <div class="form-group">
             <input type="hidden" name="id" value="{{recipe.id}}">
             {# <input type="hidden" name="creator" value="{{user.id}}"> #}
@@ -60,8 +62,8 @@
         <div class="form-group">
             <button type="submit" class="btn btn-default">Save</button>
         </div>
-    </form>
-    <hr>
+    </form>-->
+    <br>
     <div>
         <a href="{% url 'main:recipe_details' id=recipe.id %}"><button class="btn btn-default">Cancel</button></a>
     </div>
