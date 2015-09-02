@@ -293,16 +293,13 @@ class RecipeDetails(View):
             recipe_url_match = re.search(pattern, '%s' % recipe.source)
             if recipe_url_match is not None:
                 recipe_url_final = recipe_url_match.group()
-                click = urllib.urlopen(recipe_url_final)
+                click = urllib.urlopen(recipe.source)
                 if click.getcode() == 200:
                     context['is_url'] = True
-                    # print context['is_url']
                 else:
                     context['is_url'] = False
-                    # print context['is_url']
             else:
                 context['is_url'] = False
-                # print context['is_url']
         else:
             context['is_url'] = False
         return render(request, 'main/recipe_details.html', context)

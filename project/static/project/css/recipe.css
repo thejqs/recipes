@@ -1,3 +1,7 @@
+body {
+    margin-top: 70px;
+}
+
 #item-template {
     display: none;
 }
@@ -10,6 +14,11 @@
     font-weight: bold;
 }
 
+.navbar-default {
+    border-radius: 0;
+    height: 20px;
+}
+
 .meal-search {
     padding-left: 10px;
 }
@@ -19,7 +28,6 @@
 }
 
 .recipe-title {
-    padding-right: 10%;
     font-weight: bold;
     font-size: 15px;
 }
