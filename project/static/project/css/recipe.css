@@ -6,6 +6,14 @@
     display: none;
 }
 
+.title-format {
+    font-weight: bold;
+}
+
+.meal-search {
+    padding-left: 10px;
+}
+
 .recipe-container {
 	/*border: solid #efefef;*/
 }
@@ -49,4 +57,16 @@
 .rating5 {
     background-color: green;
     border-color: green;
+}
+
+abbr[title], abbr[data-original-title] {
+    border-bottom: none;
+}
+
+#items-form-container > .row {
+    margin-bottom: 15px;
+}
+
+.error {
+    border: 2px solid red;
 }

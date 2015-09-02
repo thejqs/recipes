@@ -158,14 +158,18 @@ class CreateRecipe(View):
                 recipe = recipe_form.save(commit=False)
                 recipe.creator = request.user
                 recipe.save()
-            if formset.is_valid():
-                forms = formset.save(commit=False)
-                for form in forms:
-                    form.recipe = recipe
-                    form.save()
-
+                if formset.is_valid():
+                    forms = formset.save(commit=False)
+                    for form in forms:
+                        form.recipe = recipe
+                        form.save()
+                else:
+                    context['ingredient_errors'] = formset.errors
+                    formset = IngredientFormSet()
             else:
-                formset = IngredientFormSet()
+                context['form'] = recipe_form
+                context['ingredients'] = formset
+                context['recipe_errors'] = recipe_form.errors
         return render(request, 'main/create-recipe.html', context)
 
     def get(self, request):

@@ -4,13 +4,21 @@
     <input type="hidden" name="creator" value="{{user.id}}">
     <div class="form-group">
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-5">
                 <h5>{{ form.name.label }}</h5>
-                {{ form.name }}
+                {% if recipe_errors.name %}
+                    {{ form.name|addclass:'form-control error' }}
+                {% else %}
+                    {{ form.name }}
+                {% endif %}
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-5">
                 <h5>{{ form.source.label }}</h5>
                 {{ form.source }}
+            </div>
+            <div class="col-sm-2">
+                <h5>{{ form.time.label }}</h5>
+                {{ form.time }}
             </div>
         </div>
         <br>
@@ -21,7 +29,11 @@
             </div>
             <div class="col-xs-6 col-sm-3">
                 <h5>{{ form.servings.label }}</h5>
-                {{ form.servings }}
+                {% if recipe_errors.servings %}
+                    {{ form.servings|addclass:'form-control error' }}
+                {% else %}
+                    {{ form.servings }}
+                {% endif %}
             </div>
             <div class="col-xs-6 col-sm-3">
                 <h5>{{ form.difficulty.label }}</h5>
@@ -49,13 +61,12 @@
             {{ingredients.management_form}}
             <div id="items-form-container">
                 {% for form in ingredients %}
-                    <div class='row' id="item-{{ forloop.counter0 }}">
+                    <div class='row ' id="item-{{ forloop.counter0 }}">
                         {{form.id}}
-                        <div class="col-xs-4">{{form.name|classholder:'form-control, Ingredient Name'}}</div>
-                        <div class="col-xs-4">{{form.unit|addclass:'form-control'}}</div>
                         <div class="col-xs-4">{{form.quantity|classholder:'form-control, Enter Quantity'}}</div>
+                        <div class="col-xs-4">{{form.unit|addclass:'form-control'}}</div>
+                        <div class="col-xs-4">{{form.name|classholder:'form-control, Ingredient Name'}}</div>
                     </div>
-                    <br>
                 {% endfor %}
             </div>
         </div>
@@ -69,9 +80,8 @@
 <div id="item-template">
     <div class='row' id="item-__prefix__">
         {# {{ingredients.empty_form}} #}
-        <div class="col-xs-4">{{ingredients.empty_form.name|classholder:'form-control, Ingredient Name'}}</div>
-        <div class="col-xs-4">{{ingredients.empty_form.unit|addclass:'form-control'}}</div>
         <div class="col-xs-4">{{ingredients.empty_form.quantity|classholder:'form-control, Enter Quantity'}}</div>
+        <div class="col-xs-4">{{ingredients.empty_form.unit|addclass:'form-control'}}</div>
+        <div class="col-xs-4">{{ingredients.empty_form.name|classholder:'form-control, Ingredient Name'}}</div>
     </div>
-    <br>
 </div>

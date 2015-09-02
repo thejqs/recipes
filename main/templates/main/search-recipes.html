@@ -80,9 +80,9 @@
                             </span>
                         </div>
                         <div class="panel-body">
-                            <div class='col-xs-5 col-sm-2'>Difficulty: {{recipe.get_difficulty_display}}</div>
-                            <div class="col-xs-7 col-sm-2">Meal: {{recipe.get_meal_display}}</div>
-                            <div class="col-xs-12 col-sm-8">Ingredients: 
+                            <div class='col-xs-5 col-sm-4 col-md-2'><span class='title-format'>Difficulty:&nbsp;</span>{{recipe.get_difficulty_display}}</div>
+                            <div class="col-xs-7 col-sm-8 col-md-2"><span class='title-format meal-search'>Meal: </span>{{recipe.get_meal_display}}</div>
+                            <div class="col-xs-12 col-sm-12 col-md-8"><span class='title-format'>Ingredients: </span>
                                 {% for ingredient in recipe.ingredients.all %}
                                     {{ingredient.name|title}}
                                     {% if not forloop.last %},{% endif %}

@@ -85,11 +85,13 @@ class RecipeForm(ModelForm):
     )
     name = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Name'}))
-    instructions = forms.CharField(widget=forms.Textarea(
+    time = forms.CharField(required=False, widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Time'}))
+    instructions = forms.CharField(required=False, widget=forms.Textarea(
         attrs={'class': 'form-control', 'placeholder': 'Instructions'}))
-    notes = forms.CharField(widget=forms.Textarea(
+    notes = forms.CharField(required=False, widget=forms.Textarea(
         attrs={'class': 'form-control', 'placeholder': 'Recipe Notes'}))
-    source = forms.CharField(widget=forms.TextInput(
+    source = forms.CharField(required=False, widget=forms.TextInput(
         attrs={'class': 'form-control',
                'placeholder': 'Where did you find this recipe?'}))
     servings = forms.IntegerField(widget=forms.NumberInput(
