@@ -217,6 +217,7 @@ class SearchRecipes(View):
         meal = form_filters['meal']
         servings = form_filters['servings']
         ingredients = form_filters['ingredients']
+        time = form_filters['time']
 
         # build initial filter (using every field but ingredient):
         query_dict = {}
@@ -230,6 +231,8 @@ class SearchRecipes(View):
             query_dict['meal'] = meal
         if servings:
             query_dict['servings'] = servings
+        if time:
+            query_dict['time__lte'] = time
 
         # apply the initial filter
         recipes = recipes.filter(**query_dict)

@@ -33,6 +33,7 @@
                             <p><strong>Meal:</strong> {{ recipe.get_meal_display }}</p>
                             <p><strong>Rating:</strong> {{ recipe.rating }} stars</p>
                             <p><strong>Difficulty:</strong> {{ recipe.get_difficulty_display }}</p>
+                            <p><strong>Cook Time:</strong> {{ recipe.time }}</p>
                         </div>
                         <div class="col-lg-8 col-md-4 col-sm-4">
                             {% if is_url %}
