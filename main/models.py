@@ -68,6 +68,14 @@ class Ingredient(models.Model):
     quantity = models.FloatField()
     recipe = models.ForeignKey('Recipe', related_name='ingredients')
 
+    @property
+    def unit_string(self):
+        for unit in UNIT_CHOICES:
+            if unit[0] == self.unit:
+                return unit[1]
+
+        return ''
+
     def __unicode__(self):
         return '{} {} {}'.format(self.quantity, self.unit, self.name)
 

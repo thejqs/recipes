@@ -1,59 +1,68 @@
 #!usr/bin/env python
+from __future__ import division
+from collections import OrderedDict
 
 
 class UnitShifter():
 
-    conversion_dict = {
-                            'teaspoon': 1,
-                            'tablespoon': 3,
-                            # 'eighth_cup': 6,
-                            # 'sixth_cup': 8,
-                            # 'quarter_cup': 12,
-                            # 'third_cup': 16,
-                            # 'half_cup': 24,
-                            # 'two_thirds_cup': 32,
-                            # 'three_quarters_cup': 36,
-                            'cup': 48,
-                            'pint': 96,
-                            'quart': 192,
-                            'gallon': 768
-                        }
+    conversion_dict = OrderedDict([('teaspoon', 1), ('tablespoon', 3), ('cup', 48), ('pint', 96), ('quart', 192), ('gallon', 768)])
 
     ounces_to_pounds = {
                                         'ounce': 1,
-                                        # 'quarter_pound': 4,
-                                        # 'third_pound': 5.3333333
-                                        # 'half_pound': 8,
-                                        # 'two_thirds_pound': 10.6666667
-                                        # 'three_quarters_pound': 12,
                                         'pound': 16
                                     }
 
     def to_tsp(self, recipe):
-        change_in_serving = abs(new_serving_size - db_serving_size)
+        # change_in_serving = abs(new_serving_size - recipe.servings)
 
         for ingredient in recipe.ingredients.all():
-            base_unit = conversion_dict[ingredient.unit] * ingredient.quantity
+            base_unit = conversion_dict[ingredient.unit_string] * ingredient.quantity
 
-            unit_per_serving = base_unit / servings
+            unit_per_serving = base_unit / recipe.servings
 
-            new_unit = (unit_per_serving * change_in_serving) + base_unit
+            total_tsp = (new_serving_size * unit_per_serving)
 
-            return new_unit, base_unit
+            return total_tsp
 
-    def scaled_units(self, new_unit, recipe):
+    def scaled_units(self, total_tsp):
 
-        total_units = 0
+        ingr = []
 
-        for k, v in conversion_dict.iteritems():
-            if new_unit >= v:
-                if new_unit % v == 0:
-                    total_units += (new_unit / v)
+        # total_units = 0
+
+        for k, conversion_factor in reversed(self.conversion_dict.items()):
+            # print k
+            remainder = total_tsp % conversion_factor
+            if total_tsp >= conversion_factor:
+                converted_units = int(total_tsp // conversion_factor)
+                ingr.append((k, converted_units))
+                # import ipdb; ipdb.set_trace()
+
+                if remainder != 0:
+                    total_tsp = remainder
+
                 else:
-                    new_unit / v
-                    new_unit -= (new_unit * v)
+                    break
 
-            return total_units
+            print total_tsp, k, self.conversion_dict.keys()[0]
+            if total_tsp < 1 and k == self.conversion_dict.keys()[0]:
+                if ingr and ingr[-1][0] == self.conversion_dict.keys()[0]:
+                    old_tuple = ingr[-1]
+                    new_tuple = (old_tuple[0], old_tuple[1] + total_tsp)
+                    ingr[-1] = new_tuple
+                else:
+                    ingr.append((k, total_tsp))
+
+        return ingr
+
+
+            #     total_units += (total_tsp / conversion_factor)
+
+            # else:
+            #     total_tsp / conversion_factor
+            #     total_tsp -= (total_tsp * conversion_factor)
+
+            #     return total_units
 
 
 

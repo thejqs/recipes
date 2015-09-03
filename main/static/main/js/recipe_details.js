@@ -21,7 +21,7 @@ $('#scale-servings').blur(function() {
 // when the input box has a "changes" event
 $('#scale-servings').change(function() {
 
-    // get the nenwly updated value from the spinner
+    // get the newly updated value from the spinner
     var new_value = parseFloat($(this).val())
 
     // if the value is invalid, reset it to the last known good value
