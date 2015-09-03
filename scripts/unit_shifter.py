@@ -5,48 +5,78 @@ from collections import OrderedDict
 
 class UnitShifter():
 
-    conversion_dict = OrderedDict([('teaspoon', 1), ('tablespoon', 3), ('cup', 48), ('pint', 96), ('quart', 192), ('gallon', 768)])
 
-    ounces_to_pounds = {
-                                        'ounce': 1,
-                                        'pound': 16
-                                    }
+    def set_conversion_dict(self, recipe):
 
-    def to_tsp(self, recipe):
-        # change_in_serving = abs(new_serving_size - recipe.servings)
+        conversion_dict_tsp = OrderedDict([
+            ('teaspoon', 1),
+            ('tablespoon', 3),
+            ('cup', 48),
+            ('pint', 96),
+            ('quart', 192),
+            ('gallon', 768)
+        ])
+
+        conversion_dict_oz = OrderedDict([
+                                            ('ounce', 1),
+                                            ('pound', 16),
+                                        ])
 
         for ingredient in recipe.ingredients.all():
-            base_unit = conversion_dict[ingredient.unit_string] * ingredient.quantity
+            if ingredient.unit_string != 'ounce' or ingredient.unit_string != 'pound':
+                base_units = UnitShifter().by_volume(recipe, conversion_dict_tsp)
+                scaled_units = UnitShifter().scaled_volume(total_tsp)
+            else:
+                base_units = UnitShifter().by_weight(recipe, conversion_dict_oz)
+                scaled_units = UnitShifter().scaled_weight(total_oz)
 
-            unit_per_serving = base_unit / recipe.servings
+
+    def by_weight(self, recipe, conversion_dict_oz):
+
+        # new_serving_size = USER INPUT
+
+        for ingredient in recipe.ingredients.all():
+
+                base_unit = conversion_dict_oz[ingredient.unit_string] * ingredient.quantity
+
+                unit_per_serving = (base_unit / recipe.servings)
+
+                total_oz = (new_serving_size * unit_per_serving)
+
+                return total_oz
+
+    def by_volume(self, recipe, conversion_dict_tsp):
+
+        # new_serving_size = USER INPUT
+
+        for ingredient in recipe.ingredients.all():
+
+            base_unit = conversion_dict_tsp[ingredient.unit_string] * ingredient.quantity
+
+            unit_per_serving = (base_unit / recipe.servings)
 
             total_tsp = (new_serving_size * unit_per_serving)
 
             return total_tsp
 
-    def scaled_units(self, total_tsp):
+    def scaled_volume(self, total_tsp):
 
         ingr = []
 
-        # total_units = 0
-
-        for k, conversion_factor in reversed(self.conversion_dict.items()):
-            # print k
+        for k, conversion_factor in reversed(self.conversion_dict_tsp.items()):
             remainder = total_tsp % conversion_factor
             if total_tsp >= conversion_factor:
                 converted_units = int(total_tsp // conversion_factor)
                 ingr.append((k, converted_units))
-                # import ipdb; ipdb.set_trace()
 
                 if remainder != 0:
                     total_tsp = remainder
-
                 else:
                     break
 
-            print total_tsp, k, self.conversion_dict.keys()[0]
-            if total_tsp < 1 and k == self.conversion_dict.keys()[0]:
-                if ingr and ingr[-1][0] == self.conversion_dict.keys()[0]:
+            # print total_tsp, k, self.conversion_dict_tsp.keys()[0]
+            if total_tsp < 1 and k == self.conversion_dict_tsp.keys()[0]:
+                if ingr and ingr[-1][0] == self.conversion_dict_tsp.keys()[0]:
                     old_tuple = ingr[-1]
                     new_tuple = (old_tuple[0], old_tuple[1] + total_tsp)
                     ingr[-1] = new_tuple
@@ -55,31 +85,28 @@ class UnitShifter():
 
         return ingr
 
+    def scaled_weight(self, total_oz):
 
-            #     total_units += (total_tsp / conversion_factor)
+        ingr = []
 
-            # else:
-            #     total_tsp / conversion_factor
-            #     total_tsp -= (total_tsp * conversion_factor)
+        for k, conversion_factor in reversed(self.conversion_dict_oz.items()):
+            remainder = total_oz % conversion_factor
+            if total_oz >= conversion_factor:
+                converted_units = int(total_oz // conversion_factor)
+                ingr.append((k, converted_units))
 
-            #     return total_units
+                if remainder != 0:
+                    total_oz = remainder
+                else:
+                    break
 
+            # print total_tsp, k, self.conversion_dict_tsp.keys()[0]
+            if total_oz < 1 and k == self.conversion_dict_oz.keys()[0]:
+                if ingr and ingr[-1][0] == self.conversion_dict_oz.keys()[0]:
+                    old_tuple = ingr[-1]
+                    new_tuple = (old_tuple[0], old_tuple[1] + total_oz)
+                    ingr[-1] = new_tuple
+                else:
+                    ingr.append((k, total_oz))
 
-
-
-
-
-# if tsp < 3:
-#     tsp
-
-# if tsp >= 3:
-#     tbsp = tsp * 3
-#     if tbsp % 3 == 0:
-#         tbsp
-#     else:
-#         tbsp + (tbsp % 3)
-
-# if tbsp % 16 == 0:
-#     cup = tbsp * 16
-
-
+        return ingr
