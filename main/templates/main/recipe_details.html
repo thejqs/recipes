@@ -38,10 +38,10 @@
                             {% if is_url %}
                                 <p><strong>Source:</strong> <a href="{{ recipe.source }}" target='blank'>{{ recipe.source }}</a></p>
                             {% else %}
-                                <p><strong>Source:</strong> {{ recipe.source }}</p>
+                                <p><strong> Source:</strong> {{ recipe.source }}</p>
                             {% endif %}
-                            <p><strong>Created:</strong> {{ recipe.created }}</p>
-                            <p><strong>Modified:</strong> {{ recipe.modified }}</p>
+                            <p><strong>Created:</strong> {{ recipe.created|timesince }} ago</p>
+                            <p><strong>Modified:</strong> {{ recipe.modified|timesince }} ago</p>
                         </div>
 
                         {% if recipe.event_set.all.count > 0 %}
