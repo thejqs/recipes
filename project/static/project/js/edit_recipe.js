@@ -14,6 +14,7 @@ function loadRecipe(){
         var rating = data[0].fields.rating
         var meal = data[0].fields.meal
         var difficulty = data[0].fields.difficulty
+        var time = data[0].fields.time
 
         $('#edit-recipe-form input[name="name"]').val(name);
         $('#edit-recipe-form textarea[name="instructions"]').val(instructions);
@@ -23,5 +24,6 @@ function loadRecipe(){
         $('#edit-recipe-form select[name="rating"]').val(rating);
         $('#edit-recipe-form select[name="meal"]').val(meal);
         $('#edit-recipe-form select[name="difficulty"]').val(difficulty);
+        $('#edit-recipe-form input[name="time"]').val(time);
     })
 }

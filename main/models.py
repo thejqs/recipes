@@ -41,6 +41,7 @@ class Recipe(models.Model):
     difficulty = models.IntegerField(choices=DIFFICULTY_CHOICES, default=0)
     meal = models.IntegerField(choices=MEAL_CHOICES, default=0)
     servings = models.IntegerField()
+    time = models.IntegerField(null=True, blank=True)
     exclude_from_search = models.BooleanField(default=False)
 
     def __unicode__(self):
@@ -89,3 +90,4 @@ class Event(models.Model):
 
     class Meta:
         ordering = ['-created']
+        get_latest_by = 'created'

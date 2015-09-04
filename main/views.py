@@ -158,14 +158,18 @@ class CreateRecipe(View):
                 recipe = recipe_form.save(commit=False)
                 recipe.creator = request.user
                 recipe.save()
-            if formset.is_valid():
-                forms = formset.save(commit=False)
-                for form in forms:
-                    form.recipe = recipe
-                    form.save()
-
+                if formset.is_valid():
+                    forms = formset.save(commit=False)
+                    for form in forms:
+                        form.recipe = recipe
+                        form.save()
+                else:
+                    context['ingredient_errors'] = formset.errors
+                    formset = IngredientFormSet()
             else:
-                formset = IngredientFormSet()
+                context['form'] = recipe_form
+                context['ingredients'] = formset
+                context['recipe_errors'] = recipe_form.errors
         return render(request, 'main/create-recipe.html', context)
 
     def get(self, request):
@@ -189,6 +193,8 @@ class SearchRecipes(View):
 
         recipes = Recipe.objects.filter(creator=user)
         context['recipes'] = recipes
+        context['events'] = Event.objects.all()
+        context['highlighted'] = []
         return render(request, 'main/search-recipes.html', context)
 
     def post(self, request):
@@ -204,6 +210,7 @@ class SearchRecipes(View):
         # create the context and initialize a variable to pur response in
         context = {}
         context['recipes'] = []
+        context['highlighted'] = []
 
         # extract the filter form data to variables for easier m
         name = form_filters['name']
@@ -212,6 +219,7 @@ class SearchRecipes(View):
         meal = form_filters['meal']
         servings = form_filters['servings']
         ingredients = form_filters['ingredients']
+        time = form_filters['time']
 
         # build initial filter (using every field but ingredient):
         query_dict = {}
@@ -225,6 +233,8 @@ class SearchRecipes(View):
             query_dict['meal'] = meal
         if servings:
             query_dict['servings'] = servings
+        if time:
+            query_dict['time__lte'] = time
 
         # apply the initial filter
         recipes = recipes.filter(**query_dict)
@@ -249,7 +259,8 @@ class SearchRecipes(View):
             # p(recipes); print '\n'
 
             # initialize empty list to eventually hold heaps of recipes
-            heap_list = [[] for i in range(len(words))]
+            # The +15 is bad, I need to fix this eventually
+            heap_list = [[] for i in range(len(words)+15)]
 
             # populate the heap list
             for recipe in recipes:
@@ -258,6 +269,7 @@ class SearchRecipes(View):
                     for word in words:
                         if word in ingredient.name:
                             match_count += 1
+                            context['highlighted'] += [ingredient]
                             continue
                 heap_list[match_count-1].append(recipe)
 
@@ -269,6 +281,7 @@ class SearchRecipes(View):
         # if no ingredient search was performed
         else:
             context['recipes'] = recipes
+
 
         # p(query_dict)
         # p(context)
@@ -283,6 +296,20 @@ class RecipeDetails(View):
         recipe = get_object_or_404(Recipe, pk=id)
         context = {}
         context['recipe'] = recipe
+        if recipe.source is not None:
+            pattern = '(\S+)\.(\S+)\/'
+            recipe_url_match = re.search(pattern, '%s' % recipe.source)
+            if recipe_url_match is not None:
+                recipe_url_final = recipe_url_match.group()
+                click = urllib.urlopen(recipe.source)
+                if click.getcode() == 200:
+                    context['is_url'] = True
+                else:
+                    context['is_url'] = False
+            else:
+                context['is_url'] = False
+        else:
+            context['is_url'] = False
         return render(request, 'main/recipe_details.html', context)
 
     def put(self, request, id):
@@ -313,23 +340,6 @@ class EditRecipe(View):
             queryset=Ingredient.objects.filter(recipe=recipe))
 
         context['form'] = form
-        if recipe.source is not None:
-            pattern = '(\S+)\.(\S+)\/'
-            recipe_url_match = re.search(pattern, '%s' % recipe.source)
-            if recipe_url_match is not None:
-                recipe_url_final = recipe_url_match.group()
-                click = urllib.urlopen(recipe_url_final)
-                if click.getcode() == 200:
-                    context['is_url'] = True
-                    # print context['is_url']
-                else:
-                    context['is_url'] = False
-                    # print context['is_url']
-            else:
-                context['is_url'] = False
-                # print context['is_url']
-        else:
-            context['is_url'] = False
         context['recipe'] = recipe
         context['ingredients'] = ingredients
 
