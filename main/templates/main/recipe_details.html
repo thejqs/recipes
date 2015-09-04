@@ -104,12 +104,14 @@
                         </div>
                     </div>
                     {% for ingredient in recipe.ingredients.all %}
-                        <div class="row">
+                        <div class="ingredient-row row">
                             <div class="col-sm-12">
                                 <p>
                                     <span class="ingredient-quantity">{{ingredient.quantity}}</span>
-                                    {{ingredient.get_unit_display}}
-                                    {{ingredient.name}}
+                                    <span>{{ingredient.get_unit_display}}</span>+
+                                    <span class="ingredient-quantity">{{ingredient.quantity}}</span>
+                                    <span>{{ingredient.get_unit_display}}</span>
+                                    <span>{{ingredient.name}}</span>
                                 </p>
                             </div>
                         </div>

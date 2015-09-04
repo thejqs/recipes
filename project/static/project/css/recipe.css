@@ -79,6 +79,24 @@ abbr[title], abbr[data-original-title] {
     border: 2px solid red;
 }
 
+.searched-for {
+    background-color: #EADC00;
+    border-radius: 5px;
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.nbingredient {
+    white-space: nowrap;
+}
+
+.ingredient-row {
+    border-bottom: 1px solid #dfd7ca;
+    padding-top: 10px;
+}
+
 @media (max-width: 767px) {
     .dropdown {
         padding-left: 15px;

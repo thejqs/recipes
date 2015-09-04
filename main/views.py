@@ -194,6 +194,7 @@ class SearchRecipes(View):
         recipes = Recipe.objects.filter(creator=user)
         context['recipes'] = recipes
         context['events'] = Event.objects.all()
+        context['highlighted'] = []
         return render(request, 'main/search-recipes.html', context)
 
     def post(self, request):
@@ -209,6 +210,7 @@ class SearchRecipes(View):
         # create the context and initialize a variable to pur response in
         context = {}
         context['recipes'] = []
+        context['highlighted'] = []
 
         # extract the filter form data to variables for easier m
         name = form_filters['name']
@@ -257,7 +259,8 @@ class SearchRecipes(View):
             # p(recipes); print '\n'
 
             # initialize empty list to eventually hold heaps of recipes
-            heap_list = [[] for i in range(len(words))]
+            # The +15 is bad, I need to fix this eventually
+            heap_list = [[] for i in range(len(words)+15)]
 
             # populate the heap list
             for recipe in recipes:
@@ -266,6 +269,7 @@ class SearchRecipes(View):
                     for word in words:
                         if word in ingredient.name:
                             match_count += 1
+                            context['highlighted'] += [ingredient]
                             continue
                 heap_list[match_count-1].append(recipe)
 
@@ -277,6 +281,7 @@ class SearchRecipes(View):
         # if no ingredient search was performed
         else:
             context['recipes'] = recipes
+
 
         # p(query_dict)
         # p(context)

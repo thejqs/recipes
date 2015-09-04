@@ -65,6 +65,10 @@
         <h2><center>Recipes</center></h2>
         <div class="row">
 
+            {% for ingr in ingr_search %}
+                {{ ingr }}|
+            {% endfor %}
+
             {% for recipe in recipes %}
                 <div class="recipe-container {% if recipe.exclude_from_search %} exclude-recipe {% endif %}">
                     <div class="panel panel-default">
@@ -87,8 +91,15 @@
                             <div class="col-xs-7 col-sm-8 col-md-2"><span class='title-format meal-search'>Meal: </span>{{recipe.get_meal_display}}</div>
                             <div class="col-xs-12 col-sm-12 col-md-8"><span class='title-format'>Ingredients: </span>
                                 {% for ingredient in recipe.ingredients.all %}
-                                    {{ingredient.name|title}}
+
+                                    {% if ingredient not in highlighted %}
+                                        <span class='nbingredient'>{{ingredient.name|title}}</span>
+                                    {% else %}
+                                        <span class='nbingredient searched-for'>{{ingredient.name|title}}</span>
+                                    {% endif %}
+                                    
                                     {% if not forloop.last %},{% endif %}
+
                                 {% endfor %}
                             </div>
                         </div>
