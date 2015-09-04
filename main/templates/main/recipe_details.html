@@ -108,11 +108,13 @@
                             <div class="col-sm-12" id='all-ingredients'>
                                 {% for ingredient in recipe.ingredients.all %}
                                     <p class='ingredient-row complete-ingredient'>
-                                        {# <span class="ingredient-quantity"> #}
                                         {{ingredient.quantity}}
-                                        {# </span> #}
-                                        {{ingredient.get_unit_display}}
-                                        {{ingredient.name}}
+                                        {% if ingredient.quantity > 1 %}
+                                            {{ingredient.get_unit_display}}s
+                                        {% else %}
+                                            {{ingredient.get_unit_display}}
+                                        {% endif %}
+                                         of {{ingredient.name}}
                                     </p>
                                 {% endfor %}
                             </div>

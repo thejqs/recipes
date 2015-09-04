@@ -47,7 +47,7 @@ $('#scale-servings').change(function() {
         },
         success: function(data) {
 
-            console.log(data)
+            // console.log(data)
             
             var final_html = ''
             $.each(data, function() {
