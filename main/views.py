@@ -21,6 +21,7 @@ from django.contrib.auth import (
 # project imports
 from main.forms import UserCreationForm, RecipeForm, IngredientForm
 from main.models import Ingredient, Recipe, Event
+from scripts.unit_shifter import UnitShifter
 
 # python imports
 # from pprint import pprint as p
@@ -395,23 +396,34 @@ def scale_view(request,id,scale):
         recipe = get_object_or_404(Recipe, pk=id)
 
         response_dict = {}
+        quantity_list = []
+        # quantity_list = [{
+        #                     'quantity':scale,
+        #                     'unit': 'cups'
+        #                 },
+        #                 {
+        #                     'quantity': scale,
+        #                     'unit': 'cups'
+        #                 },
+        #                 {
+        #                     'quantity':scale,
+        #                     'unit': 'cups'
+        #                 },
+        #                 {
+        #                     'quantity': scale,
+        #                     'unit': 'cups'
+        #                 }]
 
-        quantity_list = [{
-                            'quantity':scale,
-                            'unit': 'cups'
-                        },
-                        {
-                            'quantity': scale,
-                            'unit': 'cups'
-                        },
-                        {
-                            'quantity':scale,
-                            'unit': 'cups'
-                        },
-                        {
-                            'quantity': scale,
-                            'unit': 'cups'
-                        }]
+        # scaled_ingredients = UnitShifter().scale_recipe(recipe, scale)
+        # print scaled_ingredients
+        scaled_ingredients = [('cup',8), ('tablespoon',1), ('pint',9)]
+
+        for ingr in scaled_ingredients:
+            quantity_list.append({
+                'quantity':ingr[1],
+                'unit': ingr[0]
+                })
+
 
         for index, ingr in enumerate(recipe.ingredients.all(), start=1):
             response_dict[index] = {

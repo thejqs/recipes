@@ -46,16 +46,27 @@ $('#scale-servings').change(function() {
                 xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'))
         },
         success: function(data) {
+
+            console.log(data)
             
             var final_html = ''
             $.each(data, function() {
                 var quantities_html = ''
-                $.each(this.quantities, function() {
-                    quantities_html += this.quantity +' '+ this.unit+ ', '
+                var len = this.quantities.length
+                $.each(this.quantities, function(index, value) {
+                    quantities_html += this.quantity +' '+ this.unit
+                    if (this.quantity > 1) {
+                        quantities_html += 's, '
+                    } else {
+                        quantities_html += ', '
+                    }
+                    if (index == len - 2) {
+                        quantities_html += 'and '
+                    }
                 })
                 quantities_html = quantities_html.slice(0,-2)
                 final_html += "<p class='ingredient-row complete-ingredient'>"+
-                                quantities_html + ' '+ this.name +
+                                quantities_html + ' of '+ this.name +
                                 "</p>"
                 
             })

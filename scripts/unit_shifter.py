@@ -31,7 +31,7 @@ class UnitShifter():
                     base_units = self.by_volume(ingredient, new_serving_size, conversion_dict_tsp)
                     scaled_units.append(self.scaled_volume(total_tsp))
 
-                elif get_dict = conversion_dict_oz:
+                elif get_dict == conversion_dict_oz:
                     base_units = self.by_weight(ingredient, new_serving_size, conversion_dict_oz)
                     scaled_units = self.scaled_weight(total_oz)
 
