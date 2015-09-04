@@ -5,31 +5,34 @@ from collections import OrderedDict
 
 class UnitShifter():
 
+    conversion_dict_tsp = OrderedDict([
+        ('teaspoon', 1),
+        ('tablespoon', 3),
+        ('cup', 48),
+        ('pint', 96),
+        ('quart', 192),
+        ('gallon', 768)
+    ])
 
-    def set_conversion_dict(self, recipe):
+    conversion_dict_oz = OrderedDict([
+                                        ('ounce', 1),
+                                        ('pound', 16),
+                                    ])
 
-        conversion_dict_tsp = OrderedDict([
-            ('teaspoon', 1),
-            ('tablespoon', 3),
-            ('cup', 48),
-            ('pint', 96),
-            ('quart', 192),
-            ('gallon', 768)
-        ])
-
-        conversion_dict_oz = OrderedDict([
-                                            ('ounce', 1),
-                                            ('pound', 16),
-                                        ])
+    def set_conversion_dict(self, recipe, conversion_dict_oz, conversion_dict_tsp):
 
         for ingredient in recipe.ingredients.all():
-            if ingredient.unit_string != 'ounce' or ingredient.unit_string != 'pound':
-                base_units = UnitShifter().by_volume(recipe, conversion_dict_tsp)
-                scaled_units = UnitShifter().scaled_volume(total_tsp)
+            if ingredient.quantity > 0:
+                if ingredient.unit_string != 'ounce' or ingredient.unit_string != 'pound':
+                    base_units = UnitShifter().by_volume(recipe, conversion_dict_tsp)
+                    scaled_units = UnitShifter().scaled_volume(total_tsp)
+                    return base units, scaled_units
+                else:
+                    base_units = UnitShifter().by_weight(recipe, conversion_dict_oz)
+                    scaled_units = UnitShifter().scaled_weight(total_oz)
+                    return base units, scaled_units
             else:
-                base_units = UnitShifter().by_weight(recipe, conversion_dict_oz)
-                scaled_units = UnitShifter().scaled_weight(total_oz)
-
+                return "Although zero or negative ingredient quantities are a charming idea, we don't accept them."
 
     def by_weight(self, recipe, conversion_dict_oz):
 
