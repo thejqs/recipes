@@ -70,7 +70,7 @@ class Ingredient(models.Model):
 
     @property
     def unit_string(self):
-        for unit in UNIT_CHOICES:
+        for unit in Ingredient.UNIT_CHOICES:
             if unit[0] == self.unit:
                 return unit[1]
 

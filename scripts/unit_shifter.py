@@ -19,48 +19,67 @@ class UnitShifter():
                                         ('pound', 16),
                                     ])
 
-    def set_conversion_dict(self, recipe, conversion_dict_oz, conversion_dict_tsp):
+    def scale_recipe(self, recipe, new_serving_size):
+
+        scaled_units = []
 
         for ingredient in recipe.ingredients.all():
             if ingredient.quantity > 0:
-                if ingredient.unit_string != 'ounce' or ingredient.unit_string != 'pound':
-                    base_units = UnitShifter().by_volume(recipe, conversion_dict_tsp)
-                    scaled_units = UnitShifter().scaled_volume(total_tsp)
-                    return base units, scaled_units
+                get_dict = self.set_conversion_dict(ingredient)
+
+                if get_dict == conversion_dict_tsp:
+                    base_units = self.by_volume(ingredient, new_serving_size, conversion_dict_tsp)
+                    scaled_units.append(self.scaled_volume(total_tsp))
+
+                elif get_dict = conversion_dict_oz:
+                    base_units = self.by_weight(ingredient, new_serving_size, conversion_dict_oz)
+                    scaled_units = self.scaled_weight(total_oz)
+
                 else:
-                    base_units = UnitShifter().by_weight(recipe, conversion_dict_oz)
-                    scaled_units = UnitShifter().scaled_weight(total_oz)
-                    return base units, scaled_units
+                    raise Exception("Seriously, how does this not have weight or volume?")
+
             else:
-                return "Although zero or negative ingredient quantities are a charming idea, we don't accept them."
+                raise Exception("Although zero or negative ingredient quantities are a charmingly metaphysical idea, we don't accept them.")
 
-    def by_weight(self, recipe, conversion_dict_oz):
+        return scaled_units
 
-        # new_serving_size = USER INPUT
+    def set_conversion_dict(self, ingredient):
 
-        for ingredient in recipe.ingredients.all():
+        # if ingredient.quantity > 0:
+        if ingredient.unit_string != 'ounce' or ingredient.unit_string != 'pound':
+            conversion_dict_tsp = self.conversion_dict_tsp
+            return conversion_dict_tsp
 
-                base_unit = conversion_dict_oz[ingredient.unit_string] * ingredient.quantity
+        else:
+            conversion_dict_oz = self.conversion_dict_oz
+            return conversion_dict_oz
 
-                unit_per_serving = (base_unit / recipe.servings)
+        # else:
+            # return "Although zero or negative ingredient quantities are a charmingly metaphysical idea, we don't accept them."
 
-                total_oz = (new_serving_size * unit_per_serving)
+    def by_weight(self, ingredient, new_serving_size, conversion_dict_oz):
 
-                return total_oz
+        new_serving_size = abs(8)
 
-    def by_volume(self, recipe, conversion_dict_tsp):
+        base_unit = conversion_dict_oz[ingredient.unit_string] * ingredient.quantity
 
-        # new_serving_size = USER INPUT
+        unit_per_serving = (base_unit / recipe.servings)
 
-        for ingredient in recipe.ingredients.all():
+        total_oz = (new_serving_size * unit_per_serving)
 
-            base_unit = conversion_dict_tsp[ingredient.unit_string] * ingredient.quantity
+        return total_oz
 
-            unit_per_serving = (base_unit / recipe.servings)
+    def by_volume(self, ingredient, new_serving_size, conversion_dict_tsp):
 
-            total_tsp = (new_serving_size * unit_per_serving)
+        new_serving_size = abs(-8)
 
-            return total_tsp
+        base_unit = conversion_dict_tsp[ingredient.unit_string] * ingredient.quantity
+
+        unit_per_serving = (base_unit / recipe.servings)
+
+        total_tsp = (new_serving_size * unit_per_serving)
+
+        return total_tsp
 
     def scaled_volume(self, total_tsp):
 
