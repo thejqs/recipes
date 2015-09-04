@@ -389,3 +389,37 @@ class LogEvent(View):
             return HttpResponse(data, content_type='application/json')
         else:
             return HttpResponse(status=403)
+
+def scale_view(request,id,scale):
+    if request.method == 'GET':
+        recipe = get_object_or_404(Recipe, pk=id)
+
+        response_dict = {}
+
+        quantity_list = [{
+                            'quantity':scale,
+                            'unit': 'cups'
+                        },
+                        {
+                            'quantity': scale,
+                            'unit': 'cups'
+                        },
+                        {
+                            'quantity':scale,
+                            'unit': 'cups'
+                        },
+                        {
+                            'quantity': scale,
+                            'unit': 'cups'
+                        }]
+
+        for index, ingr in enumerate(recipe.ingredients.all(), start=1):
+            response_dict[index] = {
+                                    'name':ingr.name,
+                                    'quantities': quantity_list,
+                                    }
+
+        response = response_dict
+
+        data = json.dumps(response)
+        return HttpResponse(data, content_type='application/json')
