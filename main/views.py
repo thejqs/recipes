@@ -286,7 +286,7 @@ class SearchRecipes(View):
         # p(query_dict)
         # p(context)
 
-        # render and return the responsee
+        # render and return the response
         return render(request, 'main/search-recipes.html', context)
 
 

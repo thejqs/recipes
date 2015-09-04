@@ -53,12 +53,12 @@ class Ingredient(models.Model):
     UNIT_CHOICES = (
         ('', 'Unit Type'),
         (1, 'teaspoon'),
-        (2, 'dessert spoon'),
-        (3, 'tablespoon'),
-        (4, 'ounce'),
-        (5, 'cup'),
-        (6, 'pint'),
-        (7, 'quart'),
+        (2, 'tablespoon'),
+        (3, 'ounce'),
+        (4, 'cup'),
+        (5, 'pint'),
+        (6, 'quart'),
+        (7, 'pound'),
         (8, 'gallon'),
         (9, 'pinch'),
         (10, 'dash'),
@@ -68,6 +68,14 @@ class Ingredient(models.Model):
     unit = models.IntegerField(choices=UNIT_CHOICES)
     quantity = models.FloatField()
     recipe = models.ForeignKey('Recipe', related_name='ingredients')
+
+    @property
+    def unit_string(self):
+        for unit in UNIT_CHOICES:
+            if unit[0] == self.unit:
+                return unit[1]
+
+        return ''
 
     def __unicode__(self):
         return '{} {} {}'.format(self.quantity, self.unit, self.name)
