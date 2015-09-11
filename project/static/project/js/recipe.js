@@ -41,3 +41,12 @@ $('#exclude-btn').click(function(e){
         }
     })
 })
+
+$('.filters').on('change', '#exclude-results', function(e){
+    e.preventDefault();
+    if ($(this).prop("checked")){
+        $('.exclude-recipe').hide();
+    } else{
+        $('.exclude-recipe').show();
+    }
+})
