@@ -391,12 +391,11 @@ class LogEvent(View):
         else:
             return HttpResponse(status=403)
 
-def scale_view(request,id,scale):
+def scale_view(request, id, new_serving_size):
     if request.method == 'GET':
         recipe = get_object_or_404(Recipe, pk=id)
 
         response_dict = {}
-        quantity_list = []
         # quantity_list = [{
         #                     'quantity':scale,
         #                     'unit': 'cups'
@@ -413,22 +412,27 @@ def scale_view(request,id,scale):
         #                     'quantity': scale,
         #                     'unit': 'cups'
         #                 }]
+        total_list = []
 
-        # scaled_ingredients = UnitShifter().scale_recipe(recipe, scale)
+        scaled_ingredients = UnitShifter().scale_recipe(recipe, new_serving_size)
         # print scaled_ingredients
-        scaled_ingredients = [('cup',8), ('tablespoon',1), ('pint',9)]
+        # scaled_ingredients = [('cup',8), ('tablespoon',1), ('pint',9)]
 
         for ingr in scaled_ingredients:
-            quantity_list.append({
-                'quantity':ingr[1],
-                'unit': ingr[0]
+            quantity_list = []
+            for item in ingr:
+                quantity_list.append({
+                    'quantity':item[1],
+                    'unit': item[0]
                 })
+            total_list.append(quantity_list)
 
+        # print total_list
 
         for index, ingr in enumerate(recipe.ingredients.all(), start=1):
             response_dict[index] = {
-                                    'name':ingr.name,
-                                    'quantities': quantity_list,
+                                    'name': ingr.name,
+                                    'quantities': total_list[index -1],
                                     }
 
         response = response_dict

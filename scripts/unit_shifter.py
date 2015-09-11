@@ -11,8 +11,8 @@ class UnitShifter():
         for ingredient in recipe.ingredients.all():
             if ingredient.quantity > 0:
 
-                total_units = ingredient.units_per_serving
-                cooking_units = ingredient.real_units(units_per_serving, conversion_dict)
+                units_per_serving, conversion_dict = ingredient.units_per_serving
+                cooking_units = ingredient.real_units(new_serving_size, units_per_serving, conversion_dict)
                 scaled_units.append(cooking_units)
 
             else:

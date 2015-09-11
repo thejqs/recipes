@@ -98,21 +98,22 @@ class Ingredient(models.Model):
         units_per_serving = 0
         conversion_dict = {}
 
-        if self.unit_string != 'ounce' or self.unit_string != 'pound':
+        if self.unit_string != 'ounce' and self.unit_string != 'pound':
             conversion_dict = conversion_dict_tsp
-            units_per_serving = (self.quantity * conversion_dict[self.unit_string]) / recipe.servings
+            # print conversion_dict
+            units_per_serving = (self.quantity * conversion_dict[self.unit_string]) / self.recipe.servings
 
         else:
             conversion_dict = conversion_dict_oz
-            units_per_serving = (self.quantity * conversion_dict[self.unit_string]) / recipe.servings
+            units_per_serving = (self.quantity * conversion_dict[self.unit_string]) / self.recipe.servings
 
         return units_per_serving, conversion_dict
 
     def real_units(self, new_serving_size, units_per_serving, conversion_dict):
         ingr = []
-        total_units = units_per_serving * new_serving_size
+        total_units = (units_per_serving * int(new_serving_size))
 
-        for k, conversion_factor in reversed(self.conversion_dict.items()):
+        for k, conversion_factor in reversed(conversion_dict.items()):
             remainder = total_units % conversion_factor
             if total_units >= conversion_factor:
                 converted_units = int(total_units // conversion_factor)
@@ -123,8 +124,8 @@ class Ingredient(models.Model):
                 else:
                     break
 
-            if total_units < 1 and k == self.conversion_dict.keys()[0]:
-                if ingr and ingr[-1][0] == self.conversion_dict.keys()[0]:
+            if total_units < 1 and k == conversion_dict.keys()[0]:
+                if ingr and ingr[-1][0] == conversion_dict.keys()[0]:
                     old_tuple = ingr[-1]
                     new_tuple = (old_tuple[0], old_tuple[1] + total_units)
                     ingr[-1] = new_tuple

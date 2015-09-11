@@ -36,7 +36,7 @@ urlpatterns = [
         LogEvent.as_view(),
         name='log_event'),
 
-    url(r'^recipe/(?P<id>[0-9]+)/scale/(?P<scale>[0-9]+)/$',
+    url(r'^recipe/(?P<id>[0-9]+)/scale/(?P<new_serving_size>[0-9]+)/$',
         'main.views.scale_view',
         name='scale_view'),
 ]

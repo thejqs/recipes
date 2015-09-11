@@ -54,7 +54,9 @@ $('#scale-servings').change(function() {
                 var quantities_html = ''
                 var len = this.quantities.length
                 $.each(this.quantities, function(index, value) {
-                    quantities_html += this.quantity +' '+ this.unit
+                    short_quantity = (this.quantity).toFixed(1);
+                    // console.log(short_quantity)
+                    quantities_html += short_quantity +' '+ this.unit
                     if (this.quantity > 1) {
                         quantities_html += 's, '
                     } else {
