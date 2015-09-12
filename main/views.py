@@ -21,7 +21,7 @@ from django.contrib.auth import (
 # project imports
 from main.forms import UserCreationForm, RecipeForm, IngredientForm
 from main.models import Ingredient, Recipe, Event
-from scripts.unit_shifter import UnitShifter
+from scripts.unit_shifter import unit_shifter
 
 # python imports
 # from pprint import pprint as p
@@ -414,7 +414,7 @@ def scale_view(request, id, new_serving_size):
         #                 }]
         total_list = []
 
-        scaled_ingredients = UnitShifter().scale_recipe(recipe, new_serving_size)
+        scaled_ingredients = unit_shifter(recipe, new_serving_size)
         # print scaled_ingredients
         # scaled_ingredients = [('cup',8), ('tablespoon',1), ('pint',9)]
 
