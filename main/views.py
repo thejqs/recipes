@@ -21,6 +21,7 @@ from django.contrib.auth import (
 # project imports
 from main.forms import UserCreationForm, RecipeForm, IngredientForm
 from main.models import Ingredient, Recipe, Event
+from scripts.unit_shifter import unit_shifter
 
 # python imports
 # from pprint import pprint as p
@@ -389,3 +390,52 @@ class LogEvent(View):
             return HttpResponse(data, content_type='application/json')
         else:
             return HttpResponse(status=403)
+
+def scale_view(request, id, new_serving_size):
+    if request.method == 'GET':
+        recipe = get_object_or_404(Recipe, pk=id)
+
+        response_dict = {}
+        # quantity_list = [{
+        #                     'quantity':scale,
+        #                     'unit': 'cups'
+        #                 },
+        #                 {
+        #                     'quantity': scale,
+        #                     'unit': 'cups'
+        #                 },
+        #                 {
+        #                     'quantity':scale,
+        #                     'unit': 'cups'
+        #                 },
+        #                 {
+        #                     'quantity': scale,
+        #                     'unit': 'cups'
+        #                 }]
+        total_list = []
+
+        scaled_ingredients = unit_shifter(recipe, new_serving_size)
+        # print scaled_ingredients
+        # scaled_ingredients = [('cup',8), ('tablespoon',1), ('pint',9)]
+
+        for ingr in scaled_ingredients:
+            quantity_list = []
+            for item in ingr:
+                quantity_list.append({
+                    'quantity':item[1],
+                    'unit': item[0]
+                })
+            total_list.append(quantity_list)
+
+        # print total_list
+
+        for index, ingr in enumerate(recipe.ingredients.all(), start=1):
+            response_dict[index] = {
+                                    'name': ingr.name,
+                                    'quantities': total_list[index -1],
+                                    }
+
+        response = response_dict
+
+        data = json.dumps(response)
+        return HttpResponse(data, content_type='application/json')

@@ -103,19 +103,22 @@
                             <p><strong>Makes <input id="scale-servings" type="text" value="{{ recipe.servings }}"> servings:</strong></p>
                         </div>
                     </div>
-                    {% for ingredient in recipe.ingredients.all %}
-                        <div class="ingredient-row row">
-                            <div class="col-sm-12">
-                                <p>
-                                    <span class="ingredient-quantity">{{ingredient.quantity}}</span>
-                                    <span>{{ingredient.get_unit_display}}</span>+
-                                    <span class="ingredient-quantity">{{ingredient.quantity}}</span>
-                                    <span>{{ingredient.get_unit_display}}</span>
-                                    <span>{{ingredient.name}}</span>
-                                </p>
+
+                        <div class="row">
+                            <div class="col-sm-12" id='all-ingredients'>
+                                {% for ingredient in recipe.ingredients.all %}
+                                    <p class='ingredient-row complete-ingredient'>
+                                        {{ingredient.quantity}}
+                                        {% if ingredient.quantity > 1 %}
+                                            {{ingredient.get_unit_display}}s
+                                        {% else %}
+                                            {{ingredient.get_unit_display}}
+                                        {% endif %}
+                                         of {{ingredient.name}}
+                                    </p>
+                                {% endfor %}
                             </div>
                         </div>
-                    {% endfor %}
                 </div>
             </div>
         </div>

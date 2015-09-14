@@ -94,7 +94,7 @@ abbr[title], abbr[data-original-title] {
 
 .ingredient-row {
     border-bottom: 1px solid #dfd7ca;
-    padding-top: 10px;
+    /*padding-top: 10px;*/
 }
 
 @media (max-width: 767px) {

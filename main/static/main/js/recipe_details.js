@@ -18,6 +18,14 @@ $('#scale-servings').blur(function() {
     $(this).change()
 })
 
+function notWhole(n) {
+   if (n % 1 == 0){
+    return false
+   }else{
+    return true
+   }
+}
+
 // when the input box has a "changes" event
 $('#scale-servings').change(function() {
 
@@ -25,20 +33,58 @@ $('#scale-servings').change(function() {
     var new_value = parseFloat($(this).val())
 
     // if the value is invalid, reset it to the last known good value
-    if (isNaN(new_value) | new_value < 1) {
+    if (isNaN(new_value) || new_value < 1 || notWhole(new_value)) {
         $('#scale-servings').spinner('value', last_good_value)
 
     // if the value is a valid number
     } else {
 
+        $.ajax({
+        method: 'GET',
+        url: '/recipe/' + recipe_id + '/scale/' + new_value + '/',
+        beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'))
+        },
+        success: function(data) {
+
+            // console.log(data)
+            
+            var final_html = ''
+            $.each(data, function() {
+                var quantities_html = ''
+                var len = this.quantities.length
+                $.each(this.quantities, function(index, value) {
+                    short_quantity = (this.quantity).toFixed(1);
+                    // console.log(short_quantity)
+                    quantities_html += short_quantity +' '+ this.unit
+                    if (this.quantity > 1) {
+                        quantities_html += 's, '
+                    } else {
+                        quantities_html += ', '
+                    }
+                    if (index == len - 2) {
+                        quantities_html += 'and '
+                    }
+                })
+                quantities_html = quantities_html.slice(0,-2)
+                final_html += "<p class='ingredient-row complete-ingredient'>"+
+                                quantities_html + ' of '+ this.name +
+                                "</p>"
+                
+            })
+            $('#all-ingredients').html(final_html)
+
+        },
+    })
+
         // console.log(parseFloat($(this).val()))
-        var things = $('.ingredient-quantity')
-        things.each(function() {
-            var current_qty = parseFloat(this.innerHTML)
-            var single_qty = current_qty / last_good_value
-            var scaled_qty = single_qty * new_value
-            $(this).html(scaled_qty)
-        })
+        // var things = $('.ingredient-quantity')
+        // things.each(function() {
+        //     var current_qty = parseFloat(this.innerHTML)
+        //     var single_qty = current_qty / last_good_value
+        //     var scaled_qty = single_qty * new_value
+        //     $(this).html(scaled_qty)
+        // })
 
         // set the newest value as "known to be good"
         last_good_value = new_value

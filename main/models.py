@@ -1,6 +1,8 @@
+from __future__ import division
 from django.db import models
 from django.contrib.auth.models import User
 from markupfield.fields import MarkupField
+from collections import OrderedDict
 
 
 class Recipe(models.Model):
@@ -69,6 +71,8 @@ class Ingredient(models.Model):
     quantity = models.FloatField()
     recipe = models.ForeignKey('Recipe', related_name='ingredients')
 
+    # matches the measurement-type choice from the recipe detail page
+    # to its string value to compare against a conversion dict for scaling
     @property
     def unit_string(self):
         for unit in Ingredient.UNIT_CHOICES:
@@ -76,6 +80,69 @@ class Ingredient(models.Model):
                 return unit[1]
 
         return ''
+
+    # breaks down an ingredient into base units
+    # and computes base units per serving
+    # in order to accurately scale a recipe by serving size
+    @property
+    def units_per_serving(self):
+        conversion_dict_tsp = OrderedDict([
+            ('teaspoon', 1),
+            ('tablespoon', 3),
+            ('cup', 48),
+            ('pint', 96),
+            ('quart', 192),
+            ('gallon', 768)
+        ])
+
+        conversion_dict_oz = OrderedDict([
+                                        ('ounce', 1),
+                                        ('pound', 16),
+                                    ])
+
+        units_per_serving = 0
+        conversion_dict = {}
+
+        if self.unit_string != 'ounce' and self.unit_string != 'pound':
+            conversion_dict = conversion_dict_tsp
+            
+            units_per_serving = (self.quantity * conversion_dict[self.unit_string]) / self.recipe.servings
+
+        else:
+            conversion_dict = conversion_dict_oz
+            units_per_serving = (self.quantity * conversion_dict[self.unit_string]) / self.recipe.servings
+
+        return units_per_serving, conversion_dict
+
+    # scales the units per serving by the new user-entered serving size and
+    # computes the correct type of unit to display
+    def real_units(self, new_serving_size, units_per_serving, conversion_dict):
+        ingr = []
+        # new_serving_size comes in as a float
+        total_units = (units_per_serving * int(new_serving_size))
+
+        for k, conversion_factor in reversed(conversion_dict.items()):
+            remainder = total_units % conversion_factor
+            if total_units >= conversion_factor:
+                converted_units = int(total_units // conversion_factor)
+                ingr.append((k, converted_units))
+
+                if remainder != 0:
+                    total_units = remainder
+                else:
+                    break
+
+            # to handle cases of the smallest base units and
+            # an otherwise empty ingr list
+            if total_units < 1 and k == conversion_dict.keys()[0]:
+                if ingr and ingr[-1][0] == conversion_dict.keys()[0]:
+                    old_tuple = ingr[-1]
+                    new_tuple = (old_tuple[0], old_tuple[1] + total_units)
+                    ingr[-1] = new_tuple
+                else:
+                    ingr.append((k, total_units))
+
+        return ingr
 
     def __unicode__(self):
         return '{} {} {}'.format(self.quantity, self.unit, self.name)
