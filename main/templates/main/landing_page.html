@@ -1,5 +1,17 @@
 {% extends "main/base.html" %}
 
+{% load staticfiles %}
+
 {% block content %}
-    <h1>Landing Page</h1>
+    <div class="container">
+        <div class="row">
+            <h1 class='welcome-title'>Welcome To Recipes</h1>
+
+            <div class='welcome-links'>
+                <p class='welcome-login'><a href="{% url 'login' %}">Please Login</a></p>
+                <p class='or-separator'>-OR-</p>
+                <p class='welcome-register'><a href="{% url 'register' %}">Register</a></p>
+            </div>
+        </div>
+    </div>
 {% endblock content %}

@@ -71,3 +71,5 @@ settings_secret.py
 !database.sqlite3
 
 *.orig
+
+/static/

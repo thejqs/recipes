@@ -97,6 +97,27 @@ abbr[title], abbr[data-original-title] {
     /*padding-top: 10px;*/
 }
 
+.welcome-title {
+    text-align: center;
+}
+
+.welcome-links {
+    text-align: center;
+    padding-top: 50px;
+}
+
+.welcome-login {
+    font-size: 3em;
+}
+
+.or-separator {
+    padding: 10px;
+}
+
+.welcome-register {
+    font-size: 3em;
+}
+
 @media (max-width: 767px) {
     .dropdown {
         padding-left: 15px;

@@ -22,10 +22,6 @@ def pull():
     code_dir = '/sites/projects/recipes'
     with cd(code_dir):
         sudo('git pull', user='www-data')
-
-    code_dir = '/sites/projects/recipes/github_webhooks'
-    with cd(code_dir):
-        sudo('git pull', user='www-data')
     
 def deploy():
     pull()
