@@ -140,6 +140,15 @@ def root(request):
     else:
         return render(request, 'main/landing_page.html')
 
+def clean_time(self, request):
+    time = request.POST.get('time')
+    print time
+    import ipdb; ipdb.set_trace()
+    if time == '':
+        return 0
+    elif time.isdigit():
+        return time
+
 
 class CreateRecipe(View):
 
@@ -158,6 +167,10 @@ class CreateRecipe(View):
             if recipe_form.is_valid():
                 recipe = recipe_form.save(commit=False)
                 recipe.creator = request.user
+
+                cleaned_time = clean_time(self, request)
+                recipe.time = cleaned_time
+
                 recipe.save()
                 if formset.is_valid():
                     forms = formset.save(commit=False)
@@ -361,6 +374,9 @@ class EditRecipe(View):
             if recipe_form.is_valid():
                 recipe = recipe_form.save(commit=False)
                 recipe.creator = user
+                cleaned_time = clean_time(self, request)
+                recipe.time = cleaned_time
+
                 recipe.save()
             if formset.is_valid():
                 forms = formset.save(commit=False)
