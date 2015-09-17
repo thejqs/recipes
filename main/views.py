@@ -143,7 +143,6 @@ def root(request):
 def clean_time(self, request):
     time = request.POST.get('time')
     print time
-    import ipdb; ipdb.set_trace()
     if time == '':
         return 0
     elif time.isdigit():
