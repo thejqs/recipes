@@ -5,8 +5,8 @@ from contextlib import contextmanager as _contextmanager
 
 env.hosts = ['root@ryanmerrill.me']
 env.user = 'www-data'
-env.directory = '/sites/projects/landing_page'
-env.activate = 'source /sites/virtualenvs/landing_page/bin/activate'
+env.directory = '/sites/projects/recipes'
+env.activate = 'source /sites/virtualenvs/recipes/bin/activate'
 
 def push(message='updates'):
     local('git add .')
@@ -19,11 +19,11 @@ def collect_static():
         run('./manage.py collectstatic --noinput')
 
 def pull():
-    code_dir = '/sites/projects/landing_page'
+    code_dir = '/sites/projects/recipes'
     with cd(code_dir):
         sudo('git pull', user='www-data')
 
-    code_dir = '/sites/projects/landing_page/github_webhooks'
+    code_dir = '/sites/projects/recipes/github_webhooks'
     with cd(code_dir):
         sudo('git pull', user='www-data')
     
